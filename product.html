@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پیور لائف فیملی کیئر - پروڈکٹ پیج</title>
+  <link rel="icon" type="image/png" href="fevecon.png?v=2">
+  <script>
+    // Forward directly to index.html with product ID parameter
+    const params = new URLSearchParams(window.location.search);
+    const prodId = params.get('product') || params.get('id') || '1';
+    window.location.replace('index.html?product=' + encodeURIComponent(prodId));
+  </script>
+</head>
+<body style="font-family: system-ui, sans-serif; text-align: center; padding: 60px 20px; background-color: #fbfaf6; color: #12633c;">
+  <div style="max-width: 400px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #eed092;">
+    <h2 style="font-size: 20px; margin-bottom: 10px;">پیور لائف فیملی کیئر</h2>
+    <p style="font-size: 14px; color: #555;">پروڈکٹ کی تفصیل لوڈ ہو رہی ہے، براہِ کرم چند لمحے انتظار فرمائیں...</p>
+  </div>
+</body>
+</html>

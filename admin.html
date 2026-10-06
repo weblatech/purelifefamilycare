@@ -1,0 +1,2662 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pure Life Family Care — Admin Portal</title>
+  <link rel="icon" type="image/png" href="fevecon.png?v=2" />
+  <link rel="shortcut icon" href="fevecon.png?v=2" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"DM Sans"', 'Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: { DEFAULT: '#16a34a', dark: '#15803d', light: '#22c55e' },
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    body { font-family: 'DM Sans', system-ui, sans-serif; }
+
+    /* Executive Luxury Dark Brand Sidebar */
+    #sidebar {
+      background: linear-gradient(180deg, #071f15 0%, #0a291c 50%, #05160e 100%) !important;
+      border-right: 1px solid rgba(16, 185, 129, 0.15) !important;
+      box-shadow: 4px 0 24px -2px rgba(0, 0, 0, 0.25);
+    }
+    .nav-item {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      color: rgba(209, 250, 229, 0.78) !important;
+      border-radius: 0.875rem;
+    }
+    .nav-item svg {
+      transition: all 0.2s ease;
+      color: rgba(110, 231, 183, 0.85);
+    }
+    .nav-item:hover svg {
+      color: #34d399;
+      transform: scale(1.1);
+    }
+    .nav-item.active {
+      background: linear-gradient(135deg, #059669 0%, #0d9488 100%) !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 14px 0 rgba(5, 150, 105, 0.45);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+    .nav-item.active svg {
+      color: #fef08a !important; /* Gold accent on active icon */
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+    }
+    .nav-item:not(.active):hover {
+      background: rgba(16, 185, 129, 0.12) !important;
+      color: #ffffff !important;
+      transform: translateX(3px);
+    }
+    #sidebar .custom-scroll::-webkit-scrollbar { width: 4px; }
+    #sidebar .custom-scroll::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.2); border-radius: 999px; }
+    #sidebar .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(52, 211, 153, 0.4); }
+
+    /* Skeleton shimmer */
+    .skeleton {
+      background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+      border-radius: 0.5rem;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Table row hover */
+    .table-row:hover { background: #f9fafb; }
+
+    /* Print area hidden on screen */
+    .no-print { display: none !important; }
+
+    /* Checkbox styling */
+    .slip-check:checked {
+      background-color: #16a34a;
+      border-color: #16a34a;
+    }
+
+    /* Scrollbar */
+    .custom-scroll::-webkit-scrollbar { width: 5px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
+
+    /* Sidebar collapse on mobile */
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+      #sidebar.open { transform: translateX(0); }
+    }
+
+    /* Toast */
+    #toast {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Error Shake Animation */
+    @keyframes loginShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .animate-shake {
+      animation: loginShake 0.4s ease-in-out;
+    }
+
+    /* Booking RTL mode */
+    .booking-rtl input[type="text"],
+    .booking-rtl input[type="tel"],
+    .booking-rtl input[type="number"],
+    .booking-rtl input[type="date"],
+    .booking-rtl textarea,
+    .booking-rtl select {
+      text-align: right;
+      font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Urdu Typesetting', system-ui, sans-serif;
+    }
+    .booking-rtl .mobile-row .flex.items-center.bg-stone-100 {
+      border-radius: 0 0.75rem 0.75rem 0;
+      border-left: 0;
+      border-right: 1px solid #e7e5e4;
+      order: 2;
+    }
+    .booking-rtl .mobile-row input[type="tel"] {
+      order: 1;
+      border-radius: 0.75rem 0 0 0.75rem;
+    }
+    .booking-rtl .mobile-row .mobile-remove-btn {
+      order: 0;
+    }
+    .booking-rtl label {
+      text-align: right;
+    }
+    .booking-rtl .flex.items-center.gap-3.mb-5,
+    .booking-rtl .flex.items-center.gap-3.mb-4,
+    .booking-rtl .flex.items-center.justify-between.mb-4 {
+      flex-direction: row-reverse;
+    }
+    .booking-rtl .flex.items-center.gap-3.mb-5 h3,
+    .booking-rtl .flex.items-center.gap-3.mb-4 h3 {
+      direction: rtl;
+    }
+    .booking-rtl .flex.items-center.gap-3.mb-5 p,
+    .booking-rtl .flex.items-center.gap-3.mb-4 p {
+      text-align: right;
+    }
+
+    /* ============================================================
+       ★ A4 LANDSCAPE PRINT GRID — EXACT 4 SLIPS PER PAGE ★
+       ============================================================ */
+    @media print {
+      * { 
+        -webkit-print-color-adjust: exact !important; 
+        print-color-adjust: exact !important; 
+        box-sizing: border-box !important; 
+      }
+      body { 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        background: white !important; 
+      }
+      body > div:not(#printArea), aside, header, main { 
+        display: none !important; 
+      }
+      
+      #printArea {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: 94mm 94mm !important;
+        grid-auto-rows: 94mm !important;
+        gap: 2.5mm 3.5mm !important;
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        background: white !important;
+        padding: 2mm !important;
+      }
+      
+      #printArea:not([data-printing]) { 
+        display: none !important; 
+      }
+
+      .slip-card-box {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        height: 94mm !important;
+        max-height: 94mm !important;
+        border: 2px solid #000 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        background: white !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      /* 4 سلپس مکمل ہونے پر اگلا صفحہ */
+      .slip-card-box:nth-child(4n) {
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+
+      @page {
+        size: A4 landscape;
+        margin: 3mm;
+      }
+    }
+  </style>
+</head>
+
+<body class="h-full bg-stone-50 text-stone-800">
+
+<!-- ============================================================
+     ★ PURE LIFE EXECUTIVE ADMIN LOGIN SCREEN ★
+     Matches Reference Split Layout with Pure Life Emerald & Gold Branding
+     ============================================================ -->
+<div id="adminLoginScreen" class="fixed inset-0 z-[9999] flex flex-col lg:flex-row bg-white overflow-y-auto">
+  
+  <!-- LEFT: Hero Brand Banner (Emerald Luxury Gradient & Glowing Orbs) -->
+  <div class="lg:w-7/12 min-h-[420px] lg:min-h-screen relative overflow-hidden bg-gradient-to-br from-[#061a11] via-[#0a291c] to-[#0e4b2d] flex flex-col justify-center items-center p-8 sm:p-12 lg:p-16 text-white select-none">
+    
+    <!-- Background Abstract Glowing Orbs (matching reference image) -->
+    <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/3 -right-20 w-80 h-80 rounded-full bg-teal-400/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-20 left-1/3 w-96 h-96 rounded-full bg-emerald-600/15 blur-3xl pointer-events-none"></div>
+    
+    <!-- Decorative geometric accent rings -->
+    <div class="absolute -top-12 -left-12 w-64 h-64 rounded-full border border-emerald-500/10 pointer-events-none"></div>
+    <div class="absolute top-1/4 right-8 w-48 h-48 rounded-full border border-teal-400/10 pointer-events-none"></div>
+    <div class="absolute -bottom-16 right-1/4 w-80 h-80 rounded-full border border-emerald-500/10 pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-lg w-full flex flex-col items-center text-center space-y-6">
+      
+      <!-- Logo Container Card (Matching white logo card in reference image) -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-2xl border-2 border-emerald-400/30 flex items-center justify-center transform hover:scale-105 transition-transform duration-300">
+        <img src="Header Logo.png" alt="Pure Life Family Care" class="h-16 sm:h-20 w-auto object-contain" onerror="this.src='logo.png'; this.onerror=function(){this.src='fevecon.png';};" />
+      </div>
+
+      <!-- Main Headline & Subtitle -->
+      <div class="space-y-3">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+          PureLife Family Care
+        </h1>
+        <p class="text-emerald-100/90 text-sm sm:text-base font-medium leading-relaxed max-w-md mx-auto">
+          Order Management System — Manage your orders, track shipments, and grow your business efficiently.
+        </p>
+      </div>
+
+      <!-- 4 Features Stack (Matching the 4 rectangular icon pills in reference) -->
+      <div class="w-full max-w-md space-y-3 pt-4 text-left">
+        
+        <!-- Feature 1: Easy Order Management -->
+        <div class="flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur-md rounded-2xl p-3.5 px-5 border border-white/15 shadow-sm transition">
+          <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+            <i class="fa-solid fa-box-archive"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-white font-bold text-sm sm:text-base">Easy Order Management</p>
+            <p class="text-emerald-200/70 text-xs">آرڈرز کی فوری پراسیسنگ اور کسٹمر ٹریکنگ</p>
+          </div>
+        </div>
+
+        <!-- Feature 2: One-Click Slip Printing -->
+        <div class="flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur-md rounded-2xl p-3.5 px-5 border border-white/15 shadow-sm transition">
+          <div class="w-11 h-11 rounded-xl bg-teal-500/20 text-teal-300 border border-teal-400/30 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+            <i class="fa-solid fa-print"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-white font-bold text-sm sm:text-base">One-Click Slip Printing</p>
+            <p class="text-emerald-200/70 text-xs">A4 پر 4 کوریئر سلپس خودکار پرنٹ کریں</p>
+          </div>
+        </div>
+
+        <!-- Feature 3: Real-time Analytics -->
+        <div class="flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur-md rounded-2xl p-3.5 px-5 border border-white/15 shadow-sm transition">
+          <div class="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/30 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-white font-bold text-sm sm:text-base">Real-time Analytics</p>
+            <p class="text-emerald-200/70 text-xs">منافع، اخراجات اور روزانہ کی سیلز رپورٹس</p>
+          </div>
+        </div>
+
+        <!-- Feature 4: Secure & Reliable -->
+        <div class="flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur-md rounded-2xl p-3.5 px-5 border border-white/15 shadow-sm transition">
+          <div class="w-11 h-11 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-400/30 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-white font-bold text-sm sm:text-base">Secure & Reliable</p>
+            <p class="text-emerald-200/70 text-xs">گوگل شیٹ کلاؤڈ کے ساتھ 100% محفوظ رابطہ</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Trust line -->
+      <p class="text-xs text-emerald-300/60 font-mono tracking-wider pt-2">
+        PURE LIFE OMS · VERSION 3.5 · SECURED BY GOOGLE CLOUD
+      </p>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: Modern Login Card (Matching Right Column of Reference Image) -->
+  <div class="lg:w-5/12 flex-1 min-h-[500px] flex flex-col justify-center items-center p-6 sm:p-12 lg:p-16 bg-white relative">
+    
+    <div class="max-w-md w-full space-y-7">
+      
+      <!-- Header -->
+      <div class="space-y-2">
+        <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+          <span>Welcome Back!</span>
+          <span class="inline-block animate-bounce">👋</span>
+        </h2>
+        <p class="text-slate-500 text-sm sm:text-base font-medium">
+          Please login to your account to continue
+        </p>
+      </div>
+
+      <!-- Error Box (Smooth shake animation on failure) -->
+      <div id="loginErrorBox" class="hidden p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-sm font-bold flex items-center gap-3 animate-shake">
+        <i class="fa-solid fa-triangle-exclamation text-red-600 text-lg flex-shrink-0"></i>
+        <span id="loginErrorMsg">غلط یوزرنیم یا پاس ورڈ! براہ کرم دوبارہ کوشش کریں۔</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-5">
+        
+        <!-- Username Field -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+            Username
+          </label>
+          <div class="flex items-center bg-slate-50 border-2 border-slate-200/90 rounded-2xl px-4 py-3.5 focus-within:border-emerald-600 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-500/10 transition shadow-2xs">
+            <i class="fa-solid fa-user text-slate-400 mr-3 text-base"></i>
+            <input type="text" id="loginUsername" placeholder="admin" value="admin" required autocomplete="username" class="w-full bg-transparent text-base font-bold text-slate-900 outline-none tracking-wide placeholder:text-slate-400 placeholder:font-normal" />
+          </div>
+        </div>
+
+        <!-- Password Field with Show/Hide Toggle -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+            Password
+          </label>
+          <div class="flex items-center bg-slate-50 border-2 border-slate-200/90 rounded-2xl px-4 py-3.5 focus-within:border-emerald-600 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-500/10 transition shadow-2xs">
+            <i class="fa-solid fa-lock text-slate-400 mr-3 text-base"></i>
+            <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" class="w-full bg-transparent text-base font-bold text-slate-900 outline-none tracking-wider placeholder:text-slate-400" />
+            <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" class="text-slate-400 hover:text-slate-700 ml-2 focus:outline-none cursor-pointer p-1" title="پاس ورڈ دکھائیں / چھپائیں">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember Me & Forgot Password Row -->
+        <div class="flex items-center justify-between text-sm pt-1">
+          <label class="flex items-center gap-2.5 cursor-pointer text-slate-700 font-medium select-none">
+            <input type="checkbox" id="loginRememberMe" checked class="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+            <span>Remember me</span>
+          </label>
+
+          <button type="button" onclick="openForgotPasswordModal()" class="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer">
+            Forgot password?
+          </button>
+        </div>
+
+        <!-- Login CTA Button (Emerald & Gold) -->
+        <button type="submit" id="loginSubmitBtn" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-700 to-emerald-800 hover:from-emerald-700 hover:to-teal-800 text-white font-black text-base shadow-lg shadow-emerald-700/25 hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer active:scale-98">
+          <i class="fa-solid fa-arrow-right-to-bracket text-gold-300 text-lg"></i>
+          <span>Login to Dashboard</span>
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ========== TOAST ========== -->
+<div id="toast" class="fixed top-5 right-5 z-[100000] bg-stone-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-xl hidden flex items-center gap-2">
+  <svg id="toastIcon" class="w-4 h-4 text-green-400 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<div id="adminAppContainer" class="flex min-h-screen bg-stone-50 text-stone-800">
+
+  <!-- ========== SIDEBAR ========== -->
+  <aside id="sidebar" class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen flex-shrink-0 flex flex-col">
+    <!-- Brand -->
+    <div class="px-5 py-5 border-b border-emerald-900/60 bg-emerald-950/40">
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <img src="fevecon.png" alt="Pure Life" class="w-10 h-10 rounded-xl object-contain shadow-md border border-emerald-700/50 p-1 bg-white flex-shrink-0" />
+          <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 border-2 border-[#071f15] rounded-full"></span>
+        </div>
+        <div>
+          <p class="font-bold text-sm text-white tracking-wide leading-tight">Pure Life</p>
+          <p class="text-[10px] text-emerald-400/90 tracking-widest uppercase font-semibold">Family Care • Admin</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-3 py-4 space-y-1.5 custom-scroll overflow-y-auto">
+      <button onclick="switchModule('dashboard')" data-nav="dashboard" class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button onclick="switchModule('orders')" data-nav="orders" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>
+        <span>Orders CRM</span>
+      </button>
+      <button onclick="switchModule('products')" data-nav="products" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+        <span>Products</span>
+      </button>
+      <button onclick="switchModule('reports')" data-nav="reports" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+        <span>Reports & Analytics</span>
+      </button>
+      <button onclick="switchModule('slips')" data-nav="slips" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+        <span>Courier Slips</span>
+      </button>
+      <button onclick="switchModule('booking')" data-nav="booking" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>New Booking</span>
+      </button>
+      <button onclick="switchModule('returns')" data-nav="returns" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>
+        <span>Returns</span>
+      </button>
+      <button onclick="switchModule('expenses')" data-nav="expenses" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg>
+        <span>Expenses</span>
+      </button>
+      <button onclick="switchModule('settings')" data-nav="settings" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span>Store Settings</span>
+      </button>
+    </nav>
+
+    <!-- Footer -->
+    <div class="px-4 py-3.5 border-t border-emerald-900/60 bg-emerald-950/40 space-y-2">
+      <a href="index.html" target="_blank" class="flex items-center gap-2 text-xs text-emerald-300/80 hover:text-emerald-200 transition cursor-pointer font-medium group">
+        <svg class="w-4 h-4 text-emerald-400 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+        <span>View Live Store</span>
+      </a>
+      <button onclick="handleAdminLogout()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-red-300 hover:text-white bg-red-950/40 hover:bg-red-900/60 border border-red-800/40 transition cursor-pointer">
+        <i class="fa-solid fa-arrow-right-from-bracket text-red-400"></i>
+        <span>Logout (لاگ آؤٹ کریں)</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile sidebar overlay -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/30 z-30 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main class="flex-1 min-w-0 min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- Top Bar -->
+        <!-- Top Bar (Redesigned Executive Header) -->
+    <header class="sticky top-0 z-20 bg-white/95 backdrop-blur-xl border-b border-stone-200 px-6 py-3.5 flex items-center justify-between shadow-2xs">
+      <div class="flex items-center gap-3.5">
+        <button onclick="toggleSidebar()" class="md:hidden p-2 hover:bg-stone-100 rounded-xl transition text-stone-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+        </button>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 id="pageTitle" class="text-xl sm:text-2xl font-black text-stone-900 tracking-tight leading-none">Dashboard</h1>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>لائیو سسٹم (Live)</span>
+            </span>
+          </div>
+          <p class="text-[11px] text-stone-400 font-semibold mt-1 hidden sm:block">Pure Life Family Care · مرکزی انتظامی کنٹرول پینل</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Live Store Link Button -->
+        <a href="index.html" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 bg-stone-50 hover:bg-stone-100 text-stone-700 rounded-xl text-xs font-bold border border-stone-200 transition shadow-2xs">
+          <svg class="w-3.5 h-3.5 text-stone-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+          <span>لائیو ویب سائٹ</span>
+        </a>
+
+        <!-- Last Updated Pill -->
+        <div class="hidden md:flex items-center gap-1.5 bg-stone-100/90 border border-stone-200 px-3 py-1.5 rounded-xl text-xs font-semibold text-stone-600">
+          <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span id="lastUpdated" class="font-mono">Updated: Just now</span>
+        </div>
+
+        <!-- پیارا سا ریفریش کا بٹن (Premium Interactive Refresh Button) -->
+        <button onclick="refreshCurrentModule()" id="mainRefreshBtn" class="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-xs font-black rounded-xl shadow-md shadow-emerald-700/20 hover:shadow-lg hover:shadow-emerald-700/30 transition-all duration-200 active:scale-95 cursor-pointer">
+          <svg id="refreshIcon" class="w-4 h-4 transition-transform duration-700 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/>
+          </svg>
+          <span id="refreshBtnText" class="tracking-wide">ریفریش کریں</span>
+        </button>
+
+        <!-- User Profile Pill & Quick Logout -->
+        <div class="flex items-center gap-2 pl-2 border-l border-stone-200">
+          <div class="hidden sm:flex items-center gap-2 bg-stone-100/90 border border-stone-200 px-3 py-1.5 rounded-xl">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="headerAdminUsername" class="text-xs font-bold text-stone-700 font-mono">admin</span>
+          </div>
+          <button onclick="handleAdminLogout()" title="لاگ آؤٹ کریں (Logout)" class="p-2 bg-red-50 hover:bg-red-100 text-red-700 hover:text-red-800 rounded-xl border border-red-200 transition text-xs font-bold flex items-center gap-1.5 cursor-pointer active:scale-95">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span class="hidden sm:inline">Logout</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="p-5">
+
+      <!-- ===== MODULE 1: DASHBOARD ===== -->
+      <section id="mod-dashboard" class="module space-y-6">
+
+        <!-- Revenue Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Delivered Value -->
+          <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-6 text-white shadow-lg shadow-emerald-200">
+            <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full"></div>
+            <div class="relative">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg>
+                </div>
+                <span class="text-emerald-100 text-sm font-bold tracking-wide uppercase">Revenue</span>
+              </div>
+              <p id="mDelivered" class="text-3xl font-extrabold tracking-tight">--</p>
+              <p class="text-emerald-100 text-sm font-medium mt-1">Delivered Value</p>
+            </div>
+          </div>
+
+          <!-- Net Expenses -->
+          <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500 to-rose-600 p-6 text-white shadow-lg shadow-rose-200">
+            <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full"></div>
+            <div class="relative">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                </div>
+                <span class="text-rose-100 text-sm font-bold tracking-wide uppercase">Expenses</span>
+              </div>
+              <p id="mExpenses" class="text-3xl font-extrabold tracking-tight">--</p>
+              <p class="text-rose-100 text-sm font-medium mt-1">Net Expenses</p>
+            </div>
+          </div>
+
+          <!-- Return Recovery -->
+          <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-6 text-white shadow-lg shadow-amber-200">
+            <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full"></div>
+            <div class="relative">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
+                </div>
+                <span class="text-amber-100 text-sm font-bold tracking-wide uppercase">Recovery</span>
+              </div>
+              <p id="mRecovery" class="text-3xl font-extrabold tracking-tight">--</p>
+              <p class="text-amber-100 text-sm font-medium mt-1">Return Savings</p>
+            </div>
+          </div>
+
+          <!-- Net Profit / Loss -->
+          <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 p-6 text-white shadow-lg shadow-slate-300">
+            <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full"></div>
+            <div class="relative">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605"/></svg>
+                </div>
+                <span class="text-slate-300 text-sm font-bold tracking-wide uppercase">Profit</span>
+              </div>
+              <p id="mProfit" class="text-3xl font-extrabold tracking-tight">--</p>
+              <p class="text-slate-400 text-sm font-medium mt-1">Net Profit / Loss</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Badges + Order Counts -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div class="bg-white border border-stone-100 rounded-2xl px-4 py-5 flex flex-col items-center text-center shadow-sm hover:shadow-md transition">
+            <p id="bTotal" class="text-3xl font-extrabold text-stone-900">--</p>
+            <p class="text-xs text-stone-500 font-bold uppercase tracking-wider mt-1">Total Orders</p>
+          </div>
+          <div class="bg-white border border-blue-100 rounded-2xl px-4 py-5 flex flex-col items-center text-center shadow-sm hover:shadow-md transition">
+            <p id="bNewOrder" class="text-3xl font-extrabold text-blue-600">--</p>
+            <p class="text-xs text-blue-500 font-bold uppercase tracking-wider mt-1">New Orders</p>
+          </div>
+          <div class="bg-white border border-violet-100 rounded-2xl px-4 py-5 flex flex-col items-center text-center shadow-sm hover:shadow-md transition">
+            <p id="bToday" class="text-3xl font-extrabold text-violet-600">--</p>
+            <p class="text-xs text-violet-500 font-bold uppercase tracking-wider mt-1">Today's Orders</p>
+          </div>
+          <div class="bg-white border border-emerald-100 rounded-2xl px-4 py-5 flex flex-col items-center text-center shadow-sm hover:shadow-md transition">
+            <p id="bDelivered" class="text-3xl font-extrabold text-emerald-600">--</p>
+            <p class="text-xs text-emerald-500 font-bold uppercase tracking-wider mt-1">Delivered</p>
+          </div>
+          <div class="bg-white border border-amber-100 rounded-2xl px-4 py-5 flex flex-col items-center text-center shadow-sm hover:shadow-md transition">
+            <p id="bPending" class="text-3xl font-extrabold text-amber-600">--</p>
+            <p class="text-xs text-amber-500 font-bold uppercase tracking-wider mt-1">Pending</p>
+          </div>
+          <div class="bg-white border border-red-100 rounded-2xl px-4 py-5 flex flex-col items-center text-center shadow-sm hover:shadow-md transition">
+            <p id="bReturned" class="text-3xl font-extrabold text-red-600">--</p>
+            <p class="text-xs text-red-500 font-bold uppercase tracking-wider mt-1">Returned</p>
+          </div>
+        </div>
+
+                <!-- Live Inventory Stock Section (Redesigned Executive Card) -->
+        <div class="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden hover:shadow-md transition duration-300">
+          <!-- Card Header with Badges & Live Status -->
+          <div class="px-6 py-5 border-b border-stone-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-stone-50/50 via-white to-stone-50/30">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center text-white shadow-md shadow-emerald-500/20 flex-shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-extrabold text-lg text-stone-900 leading-tight">Live Inventory Stock & Health</h3>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">ریئل ٹائم انوینٹری</span>
+                </div>
+                <p class="text-xs text-stone-400 mt-0.5">موجودہ اسٹاک، آرڈرز کے لیے بک شدہ، ڈلیورڈ اور لاگت کا لائیو تجزیہ</p>
+              </div>
+            </div>
+
+            <!-- Top Summary Badges -->
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-800 rounded-xl text-xs font-black border border-emerald-200 shadow-2xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span id="invStatAvailable">0 Units دستیاب</span>
+              </div>
+              <div class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-800 rounded-xl text-xs font-black border border-amber-200 shadow-2xs">
+                <span id="invStatBooked">0 بک شدہ</span>
+              </div>
+              <div class="flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-800 rounded-xl text-xs font-black border border-purple-200 shadow-2xs">
+                <span id="invStatValue">PKR 0 مالیت</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-stone-200 bg-stone-50/70 text-stone-500 font-bold uppercase text-[11px] tracking-wider">
+                  <th class="text-left px-6 py-3.5">PRODUCT</th>
+                  <th class="text-center px-4 py-3.5">INITIAL</th>
+                  <th class="text-center px-4 py-3.5">ADDED</th>
+                  <th class="text-center px-4 py-3.5">BOOKED</th>
+                  <th class="text-center px-4 py-3.5">DELIVERED</th>
+                  <th class="text-center px-4 py-3.5">RETURNED</th>
+                  <th class="text-center px-5 py-3.5">AVAILABLE</th>
+                  <th class="text-right px-4 py-3.5">PRODUCT COST</th>
+                  <th class="text-right px-4 py-4">BOX COST</th>
+                  <th class="text-center px-5 py-3.5">STOCK HEALTH</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryBody">
+                <tr><td colspan="10" class="px-6 py-10 text-center text-stone-400">Loading inventory...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="px-6 py-3 bg-stone-50/40 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400">
+            <span>ہر بکنگ اور ڈلیوری کے ساتھ انوینٹری خود بخود کٹوتی ہو جاتی ہے۔</span>
+            <span class="font-semibold text-stone-500">Pure Life Auto Inventory Engine</span>
+          </div>
+        </div>
+
+      </section>
+
+            <!-- ===== MODULE 2: ORDERS CRM (Matches Reference Design) ===== -->
+      <section id="mod-orders" class="module hidden space-y-4">
+        
+        <!-- 1. TOP HEADER & ACTION BUTTONS BAR (Clean & Unified) -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-5 rounded-3xl border border-stone-200 shadow-xs">
+          <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-2xs flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2.5">
+                <h2 class="text-xl font-black text-stone-900 tracking-tight">Orders CRM</h2>
+                <span id="ordersTotalBadge" class="px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-200">0</span>
+              </div>
+              <p id="ordersSelectedInfo" class="text-xs font-semibold text-stone-400 mt-0.5">Showing 0 orders · 0 selected</p>
+            </div>
+          </div>
+
+          <!-- Action Buttons Group (Cleanly Aligned & Responsive) -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- + New Order -->
+            <button type="button" onclick="switchModule('booking')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black transition shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <span>New Order</span>
+            </button>
+
+            <!-- Edit Order -->
+            <button type="button" onclick="editSelectedOrderCRM()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black transition shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/></svg>
+              <span>Edit Order</span>
+            </button>
+
+            <!-- Print Slips -->
+            <button type="button" onclick="printSelectedOrdersCRM()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-black transition shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg>
+              <span>Print Slips</span>
+            </button>
+
+            <!-- M.O (PO) -->
+            <button type="button" onclick="printPostOfficeMO()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-black transition shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+              <span>M.O (PO)</span>
+            </button>
+
+            <!-- Leopards Labels -->
+            <button type="button" onclick="printLeopardsLabels()" class="px-3.5 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-black transition shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg>
+              <span>Leopards</span>
+            </button>
+
+            <!-- Delete Selected -->
+            <button type="button" onclick="deleteSelectedOrdersCRM()" class="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black transition shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+              <span>Delete</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. UNIFIED FILTER TOOLBAR (Single Compact Responsive Card) -->
+        <div class="bg-white rounded-3xl p-4 border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
+          <!-- Search & Dropdown Filters -->
+          <div class="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
+            <!-- Search Bar with Icon -->
+            <div class="relative flex-1 min-w-[180px] max-w-sm">
+              <input id="orderSearch" type="text" placeholder="Search orders, phone, customer..." oninput="filterOrders()"
+                     class="w-full border border-stone-200 rounded-xl pl-9 pr-4 py-2 text-xs font-semibold focus:ring-2 focus:ring-indigo-500 outline-none bg-stone-50/60 transition" />
+              <svg class="w-4 h-4 text-stone-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+            </div>
+
+            <!-- Status Filter Dropdown -->
+            <div class="w-36 sm:w-44">
+              <select id="statusFilter" onchange="filterOrders()" class="w-full border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 focus:ring-2 focus:ring-indigo-500 outline-none bg-stone-50/60 transition cursor-pointer">
+                <option value="">All Statuses (تمام)</option>
+                <option value="New Order">New Order</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Booked">Booked</option>
+                <option value="Pending">Pending</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Returned">Returned</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <!-- Courier Filter Dropdown -->
+            <div class="w-40 sm:w-48">
+              <select id="courierFilter" onchange="filterOrders()" class="w-full border border-stone-200 rounded-xl px-3 py-2 text-xs font-bold text-stone-800 focus:ring-2 focus:ring-indigo-500 outline-none bg-stone-50/60 transition cursor-pointer">
+                <option value="">All Couriers (تمام کورئیر)</option>
+                <option value="Post Office">Post Office (پاکستان پوسٹ)</option>
+                <option value="Leopards">Leopards (لیپرڈز)</option>
+                <option value="TCS">TCS (ٹی سی ایس)</option>
+                <option value="M&P">M&P</option>
+                <option value="Call Courier">Call Courier</option>
+                <option value="PostEx">PostEx</option>
+                <option value="Trax">Trax</option>
+                <option value="COD">COD</option>
+                <option value="Standard">Standard / Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Date Filters & Actions -->
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-1 text-xs font-bold text-stone-600 bg-stone-50 border border-stone-200 px-2 py-1.5 rounded-xl">
+              <span class="text-stone-400">From:</span>
+              <input type="date" id="orderDateFrom" onchange="filterOrders()" class="bg-transparent text-xs font-semibold outline-none cursor-pointer" />
+            </div>
+
+            <div class="flex items-center gap-1 text-xs font-bold text-stone-600 bg-stone-50 border border-stone-200 px-2 py-1.5 rounded-xl">
+              <span class="text-stone-400">To:</span>
+              <input type="date" id="orderDateTo" onchange="filterOrders()" class="bg-transparent text-xs font-semibold outline-none cursor-pointer" />
+            </div>
+
+            <button type="button" onclick="clearOrdersFilter()" class="px-3 py-1.5 border border-stone-200 hover:bg-stone-100 text-stone-700 rounded-xl text-xs font-bold transition shadow-2xs cursor-pointer" title="Reset Filters">
+              &times; Clear
+            </button>
+
+            <button type="button" onclick="loadOrders()" class="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold transition shadow-2xs cursor-pointer" title="Reload Orders">
+              ↻
+            </button>
+
+            <!-- Rows Per Page -->
+            <div class="flex items-center gap-1 text-xs font-semibold text-stone-500 pl-2 border-l border-stone-200">
+              <span>Rows:</span>
+              <select id="ordersPerPage" onchange="filterOrders()" class="border border-stone-200 rounded-lg px-1.5 py-1 bg-white font-bold text-stone-800 outline-none cursor-pointer">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100" selected>100</option>
+                <option value="9999">All</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. ORDERS TABLE CARD -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-xs overflow-hidden">
+          <div class="overflow-x-auto custom-scroll">
+            <table class="w-full min-w-[1100px] text-xs">
+              <thead>
+                <tr class="border-b border-stone-200 bg-stone-50/90 text-stone-500 font-bold uppercase text-[10px] tracking-wider whitespace-nowrap">
+                  <th class="text-center px-2 py-3 w-10">
+                    <input type="checkbox" id="selectAllOrdersCRM" onchange="toggleSelectAllOrdersCRM(this)" class="rounded border-stone-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5 cursor-pointer" />
+                  </th>
+                  <th class="text-left px-3 py-3 w-24">ORDER #</th>
+                  <th class="text-left px-3 py-3 w-28">DATE</th>
+                  <th class="text-left px-3 py-3 min-w-[180px]">CUSTOMER</th>
+                  <th class="text-left px-3 py-3 min-w-[200px]">PRODUCT</th>
+                  <th class="text-right px-3 py-3 w-28">AMOUNT</th>
+                  <th class="text-left px-3 py-3 w-36">COURIER</th>
+                  <th class="text-center px-2 py-3 w-28">TRACKING</th>
+                  <th class="text-center px-3 py-3 w-32">STATUS</th>
+                  <th class="text-center px-2 py-3 w-24">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="ordersBody">
+                <tr><td colspan="10" class="px-5 py-10 text-center text-stone-400 font-medium">Loading orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4. EDIT ORDER MODAL (Updated with Confirmed & Booked statuses) -->
+        <div id="editOrderModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-stone-200">
+            <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">✏️</span>
+                <h3 class="text-lg font-extrabold text-stone-900">Edit Order</h3>
+              </div>
+              <button onclick="closeEditModal()" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-500 flex items-center justify-center transition font-bold">&times;</button>
+            </div>
+            <div class="px-6 py-5 space-y-4">
+              <input type="hidden" id="editOrderNo" />
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-stone-500 mb-1.5 uppercase tracking-wider">Customer Name</label>
+                  <input id="editCustomerName" type="text" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold text-stone-900 focus:ring-2 focus:ring-indigo-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-stone-500 mb-1.5 uppercase tracking-wider">Mobile No</label>
+                  <input id="editMobileNo" type="text" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-mono font-bold focus:ring-2 focus:ring-indigo-500 outline-none" />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-stone-500 mb-1.5 uppercase tracking-wider">Product</label>
+                  <input id="editProductName" type="text" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold text-stone-900 focus:ring-2 focus:ring-indigo-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-stone-500 mb-1.5 uppercase tracking-wider">Quantity</label>
+                  <input id="editProductQty" type="number" min="1" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none" />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-stone-500 mb-1.5 uppercase tracking-wider">Price (Rs.)</label>
+                  <input id="editProductPrice" type="number" min="0" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-extrabold text-emerald-700 focus:ring-2 focus:ring-indigo-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-stone-500 mb-1.5 uppercase tracking-wider">Tracking No</label>
+                  <input id="editTrackingNo" type="text" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-mono font-bold text-cyan-800 focus:ring-2 focus:ring-indigo-500 outline-none" />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-stone-500 mb-1.5 uppercase tracking-wider">Delivery Option</label>
+                  <select id="editDeliveryOption" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <option value="Post Office">Post Office</option>
+                    <option value="Leopards">Leopards</option>
+                    <option value="TCS">TCS</option>
+                    <option value="M&P">M&P</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Daewoo">Daewoo</option>
+                    <option value="Call Courier">Call Courier</option>
+                    <option value="PostEx">PostEx</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-stone-500 mb-1.5 uppercase tracking-wider">Status (سٹیٹس)</label>
+                  <select id="editStatus" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <option value="New Order">New Order</option>
+                    <option value="Confirmed">Confirmed (کنفرم شدہ)</option>
+                    <option value="Booked">Booked (بک شدہ)</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Returned">Returned</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-stone-500 mb-1.5 uppercase tracking-wider">Address</label>
+                <textarea id="editAddress" rows="2" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-none"></textarea>
+              </div>
+            </div>
+            <div class="px-6 py-4 border-t border-stone-100 flex justify-end gap-3 bg-stone-50/50">
+              <button onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold text-stone-600 bg-white border border-stone-200 hover:bg-stone-100 transition shadow-2xs">Cancel</button>
+              <button onclick="saveEditedOrder()" class="px-6 py-2.5 rounded-xl text-sm font-extrabold text-white bg-indigo-600 hover:bg-indigo-700 transition shadow-md">Save Changes</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===== MODULE 3: COURIER SLIPS ===== -->
+      <section id="mod-slips" class="module hidden space-y-4">
+        <!-- Sender Profile -->
+        <div class="bg-white rounded-2xl border border-stone-100 p-5">
+          <h3 class="font-semibold text-stone-900 mb-4">Sender Profile</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-stone-500 mb-1">Company Name</label>
+              <input id="senderName" type="text" value="Pure Life Family Care" class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-500 mb-1">Address & Postal Code</label>
+              <input id="senderAddress" type="text" value="Post Office Depalpur District Okara (56180)" class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-500 mb-1">Phone Numbers</label>
+              <input id="senderPhone" type="text" value="0335-6352625" class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-500 mb-1">Company Logo URL</label>
+              <input id="senderLogo" type="text" value="Header Logo.png" class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-stone-500 mb-1">Shipping Price (Rs.)</label>
+              <input id="shippingPrice" type="number" value="75" class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Slip Actions -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <button onclick="selectAllSlips()" class="text-xs font-medium text-brand hover:text-brand-dark transition">Select All</button>
+            <button onclick="deselectAllSlips()" class="text-xs font-medium text-stone-400 hover:text-stone-600 transition">Deselect All</button>
+            <span id="selectedCount" class="text-xs text-stone-400"></span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="printSelectedSlips()" class="bg-stone-900 hover:bg-stone-800 text-white font-medium text-sm px-5 py-2.5 rounded-xl transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg>
+              Print Selected (4 per A4 Landscape)
+            </button>
+          </div>
+        </div>
+
+        <!-- Slip Orders Table -->
+        <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-stone-100 bg-stone-50">
+                  <th class="text-center px-4 py-3 w-10"><input type="checkbox" id="selectAllCheck" onchange="toggleSelectAll()" class="slip-check rounded border-stone-300 text-brand focus:ring-brand" /></th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Order</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Customer</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Mobile</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Product</th>
+                  <th class="text-right px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Price</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Address</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500 uppercase">Status</th>
+                </tr>
+              </thead>
+              <tbody id="slipsBody">
+                <tr><td colspan="8" class="px-5 py-8 text-center text-stone-400">Loading orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== MODULE 4: NEW BOOKING ===== -->
+      <section id="mod-booking" class="module hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 bg-gradient-to-br from-brand to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-brand/20">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+              <h2 id="bookingTitle" class="text-xl font-extrabold text-stone-900">New Order Booking</h2>
+              <p class="text-xs text-stone-400 mt-0.5">Fill the form below to create a new order</p>
+            </div>
+          </div>
+          <button type="button" onclick="toggleBookingLang()" id="langToggleBtn"
+                  class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border-2 border-stone-200 hover:border-brand hover:bg-brand/5 transition shadow-sm">
+            <span id="langLabel">اردو</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div class="xl:col-span-2">
+            <div class="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden" id="bookingCard">
+              <form id="bookingForm" onsubmit="submitBooking(event)">
+                <div class="px-7 pt-7 pb-6 border-b border-stone-100">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label id="lblDate" class="block text-xs font-semibold text-stone-500 mb-2">Date</label>
+                      <input type="date" id="bDate" required class="w-full border border-stone-200 rounded-xl px-4 py-3.5 text-sm outline-none" />
+                    </div>
+                    <div>
+                      <label id="lblName" class="block text-xs font-semibold text-stone-500 mb-2">Customer Name</label>
+                      <input type="text" required id="bCustomerName" placeholder="Full name" class="w-full border border-stone-200 rounded-xl px-4 py-3.5 text-sm outline-none" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="px-7 py-6 border-b border-stone-100">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 id="secMobile" class="text-sm font-bold text-stone-800">Mobile Numbers</h3>
+                    <button type="button" onclick="addMobileField()" id="addMobileBtn" class="text-xs font-bold text-brand hover:text-white bg-brand/5 hover:bg-brand border border-brand/20 px-4 py-2 rounded-xl transition">
+                      <span id="addMobileLabel">Add Number</span>
+                    </button>
+                  </div>
+                  <div id="mobileFieldsContainer" class="space-y-3">
+                    <div class="flex items-center gap-3 mobile-row group">
+                      <div class="flex items-center bg-stone-100 rounded-l-xl px-3 h-[46px] border border-r-0 border-stone-200">
+                        <span class="text-sm font-bold text-stone-500">+92</span>
+                      </div>
+                      <input type="tel" name="mobileNo" required placeholder="3XX XXXXXXX" class="flex-1 border border-stone-200 rounded-xl px-4 py-3.5 text-sm outline-none mobile-input" />
+                      <button type="button" onclick="removeMobileField(this)" class="mobile-remove-btn hidden w-10 h-10 items-center justify-center text-red-400 hover:bg-red-50 rounded-xl">✕</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="px-7 py-6 border-b border-stone-100">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label id="lblDelivery" class="block text-xs font-semibold text-stone-500 mb-2">Delivery Option</label>
+                      <select name="deliveryOption" required id="bDelivery" class="w-full border border-stone-200 rounded-xl px-4 py-3.5 text-sm outline-none">
+                        <option value="TCS">TCS</option>
+                        <option value="Leopard">Leopard</option>
+                        <option value="M&P">M&P</option>
+                        <option value="Post Office">Post Office</option>
+                        <option value="Standard">Standard</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label id="lblStatus" class="block text-xs font-semibold text-stone-500 mb-2">Status</label>
+                      <select name="status" id="bStatus" class="w-full border border-stone-200 rounded-xl px-4 py-3.5 text-sm outline-none">
+                        <option value="New Order">New Order</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Returned">Returned</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="px-7 py-6 border-b border-stone-100">
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    <div class="sm:col-span-2">
+                      <label id="lblProduct" class="block text-xs font-semibold text-stone-500 mb-2">Product Name</label>
+                      <input type="text" required id="bProductName" placeholder="Product name" class="w-full border border-stone-200 rounded-xl px-4 py-3.5 text-sm outline-none" />
+                    </div>
+                    <div>
+                      <label id="lblQty" class="block text-xs font-semibold text-stone-500 mb-2">Quantity</label>
+                      <input type="number" min="1" value="1" required id="bQty" class="w-full border border-stone-200 rounded-xl px-4 py-3.5 text-sm outline-none" />
+                    </div>
+                  </div>
+                  <div class="mt-4">
+                    <label id="lblAmount" class="block text-xs font-semibold text-stone-500 mb-2">Total Amount (Rs.)</label>
+                    <input type="number" min="0" required id="bPrice" placeholder="0" class="w-full sm:w-1/2 border border-stone-200 rounded-xl px-4 py-3.5 text-sm outline-none font-bold" />
+                  </div>
+                </div>
+
+                <div class="px-7 py-6">
+                  <label id="secAddress" class="block text-xs font-semibold text-stone-500 mb-2">Delivery Address</label>
+                  <textarea rows="3" required id="bAddress" placeholder="Complete address" class="w-full border border-stone-200 rounded-xl px-4 py-3.5 text-sm outline-none"></textarea>
+                </div>
+
+                <div class="px-7 py-5 bg-stone-50 flex items-center justify-between border-t border-stone-100">
+                  <button type="submit" id="bookingSubmitBtn" class="bg-brand hover:bg-brand-dark text-white font-bold py-3 px-8 rounded-xl text-sm transition shadow-md shadow-brand/20">
+                    <span id="submitLabel">Save Order</span>
+                  </button>
+                  <button type="button" onclick="resetBookingForm()" id="resetBtn" class="text-sm font-medium text-stone-400 hover:text-stone-700">Clear Form</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Order Preview -->
+          <div class="xl:col-span-1 space-y-5">
+            <div class="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden p-5 space-y-3">
+              <h4 class="text-xs font-bold text-stone-400 uppercase tracking-wider">Order Preview</h4>
+              <div class="text-sm"><span class="text-stone-400 text-xs">Customer</span><p id="previewName" class="font-medium text-stone-800">--</p></div>
+              <div class="text-sm"><span class="text-stone-400 text-xs">Mobile</span><p id="previewMobile" class="font-medium text-stone-800">--</p></div>
+              <div class="text-sm"><span class="text-stone-400 text-xs">Product</span><p id="previewProduct" class="font-medium text-stone-800">--</p></div>
+              <div class="border-t border-stone-100 pt-3 flex justify-between items-center">
+                <span class="text-xs font-bold text-stone-400">Total</span>
+                <span id="previewTotal" class="text-xl font-extrabold text-brand">Rs. 0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== MODULE: RETURNS ===== -->
+      <section id="mod-returns" class="module hidden space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm">
+            <h3 class="font-semibold text-stone-900 mb-4">Record Return</h3>
+            <form id="returnForm" onsubmit="submitReturn(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-medium text-stone-500 mb-1">Order Number</label>
+                <select id="returnOrderNo" required class="w-full border border-stone-200 rounded-xl px-3 py-2.5 text-sm outline-none">
+                  <option value="">Select order...</option>
+                </select>
+              </div>
+              <div id="returnOrderInfo" class="hidden bg-stone-50 rounded-xl p-4 space-y-2 text-sm">
+                <div class="flex justify-between"><span class="text-stone-400">Customer</span><span id="retInfoCustomer" class="font-medium"></span></div>
+                <div class="flex justify-between"><span class="text-stone-400">Product</span><span id="retInfoProduct" class="font-medium"></span></div>
+                <div class="flex justify-between"><span class="text-stone-400">Price</span><span id="retInfoPrice" class="font-medium"></span></div>
+                <div class="flex justify-between border-t border-stone-200 pt-2"><span class="text-stone-500 font-medium">Recovery</span><span id="retInfoRecovery" class="font-bold text-emerald-600"></span></div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-stone-500 mb-1">Return Reason</label>
+                <textarea id="returnReason" rows="2" placeholder="Optional reason..." class="w-full border border-stone-200 rounded-xl px-3 py-2.5 text-sm outline-none resize-none"></textarea>
+              </div>
+              <button type="submit" id="returnSubmitBtn" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl text-sm transition">
+                Confirm Return
+              </button>
+            </form>
+          </div>
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-sm">
+            <div class="px-6 py-4 border-b border-stone-100"><h3 class="font-semibold text-stone-900">Returnable Orders</h3></div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-stone-100 bg-stone-50">
+                    <th class="text-left px-6 py-3 text-xs font-semibold text-stone-500">Order</th>
+                    <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500">Customer</th>
+                    <th class="text-left px-4 py-3 text-xs font-semibold text-stone-500">Product</th>
+                    <th class="text-right px-4 py-3 text-xs font-semibold text-stone-500">Price</th>
+                    <th class="text-left px-6 py-3 text-xs font-semibold text-stone-500">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="returnableBody"><tr><td colspan="5" class="px-6 py-8 text-center text-stone-400">Loading orders...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== MODULE: EXPENSES ===== -->
+      <section id="mod-expenses" class="module hidden space-y-4">
+        <div class="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm">
+          <h3 class="text-lg font-extrabold text-stone-900 mb-4">Add Expense</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-stone-500 mb-1">Date</label>
+              <input id="expDate" type="date" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-500 mb-1">Category</label>
+              <select id="expCategory" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none">
+                <option value="Facebook Ads">Facebook Ads</option>
+                <option value="Product Cost">Product Cost</option>
+                <option value="Delivery Charges">Delivery Charges</option>
+                <option value="Packing">Packing</option>
+                <option value="Rent">Rent</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Salary">Salary</option>
+                <option value="Transport">Transport</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-500 mb-1">Amount (Rs.)</label>
+              <input id="expAmount" type="number" min="0" placeholder="0" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none font-bold" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-500 mb-1">Description</label>
+              <input id="expDesc" type="text" placeholder="Note..." class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none" />
+            </div>
+          </div>
+          <button onclick="addExpense()" class="mt-4 bg-rose-500 hover:bg-rose-600 text-white font-bold text-sm px-6 py-2.5 rounded-xl transition">
+            + Add Expense
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-sm">
+          <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+            <h3 class="font-bold text-lg text-stone-900">Expense History</h3>
+            <span id="totalExpensesLabel" class="text-sm font-bold text-rose-600">Total: Rs. 0</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-base">
+              <thead>
+                <tr class="border-b border-stone-200 bg-stone-50">
+                  <th class="text-left px-6 py-4 text-xs font-bold text-stone-500 uppercase">Date</th>
+                  <th class="text-left px-4 py-4 text-xs font-bold text-stone-500 uppercase">Category</th>
+                  <th class="text-right px-4 py-4 text-xs font-bold text-stone-500 uppercase">Amount</th>
+                  <th class="text-left px-4 py-4 text-xs font-bold text-stone-500 uppercase">Description</th>
+                  <th class="text-center px-4 py-4 text-xs font-bold text-stone-500 uppercase w-28">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="expensesBody"><tr><td colspan="5" class="px-5 py-8 text-center text-stone-400 font-bold">Loading expenses...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+            
+      <!-- ===== MODULE: REPORTS & ANALYTICS (Matches Reference Design) ===== -->
+      <section id="mod-reports" class="module hidden space-y-6">
+
+        <!-- 1. DATE FILTER BANNER (Matches Reference Image 1) -->
+        <div class="bg-gradient-to-r from-violet-700 via-indigo-700 to-purple-800 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+            <div>
+              <p class="text-[11px] font-black uppercase tracking-widest text-violet-200">FILTER BY DATE</p>
+              <div class="flex items-center gap-2 mt-1">
+                <h2 id="reportDateRangeDisplay" class="text-2xl sm:text-3xl font-extrabold tracking-tight">2026-09-01 &rarr; 2026-09-30</h2>
+              </div>
+              <p id="reportDateSubDisplay" class="text-xs text-violet-200/80 mt-1 font-medium">2026-09-01 to 2026-09-30</p>
+            </div>
+
+            <!-- Preset Buttons -->
+            <div class="flex flex-wrap items-center gap-1.5 bg-white/10 backdrop-blur-md p-1.5 rounded-2xl border border-white/15">
+              <button type="button" onclick="setReportDatePreset('today')" id="preset-today" class="report-preset-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-white hover:bg-white/20 transition">Today</button>
+              <button type="button" onclick="setReportDatePreset('yesterday')" id="preset-yesterday" class="report-preset-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-white hover:bg-white/20 transition">Yesterday</button>
+              <button type="button" onclick="setReportDatePreset('thisWeek')" id="preset-thisWeek" class="report-preset-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-white hover:bg-white/20 transition">This Week</button>
+              <button type="button" onclick="setReportDatePreset('thisMonth')" id="preset-thisMonth" class="report-preset-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-white hover:bg-white/20 transition">This Month</button>
+              <button type="button" onclick="setReportDatePreset('allTime')" id="preset-allTime" class="report-preset-btn active bg-white text-violet-900 shadow-md px-3.5 py-1.5 rounded-xl text-xs font-bold transition">All Time</button>
+            </div>
+          </div>
+
+          <!-- Date Inputs Row -->
+          <div class="mt-5 pt-4 border-t border-white/15 flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-violet-200">From</span>
+              <input type="date" id="reportDateFrom" class="bg-white text-stone-900 font-semibold px-3 py-1.5 rounded-xl text-xs outline-none shadow-xs border border-white/20" />
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-violet-200">To</span>
+              <input type="date" id="reportDateTo" class="bg-white text-stone-900 font-semibold px-3 py-1.5 rounded-xl text-xs outline-none shadow-xs border border-white/20" />
+            </div>
+            <button type="button" onclick="applyCustomDateFilter()" class="bg-white hover:bg-violet-50 text-violet-900 font-extrabold text-xs px-5 py-2 rounded-xl transition shadow-md flex items-center gap-1.5">
+              <span>Apply Filter</span>
+            </button>
+            <button type="button" onclick="exportReportsCSV()" class="ml-auto bg-white/15 hover:bg-white/25 text-white font-bold text-xs px-4 py-2 rounded-xl transition border border-white/20 flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. STATUS KPI CARDS (Row 1 from Reference Image 1) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3.5">
+          <!-- Total Orders -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-stone-400">TOTAL ORDERS</span>
+              <span class="text-base">📦</span>
+            </div>
+            <p id="rptTotalOrders" class="text-3xl font-extrabold text-stone-900 mt-2">0</p>
+            <p class="text-[11px] text-stone-400 mt-1">Selected period</p>
+          </div>
+
+          <!-- Today's Orders -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-stone-400">TODAY'S ORDERS</span>
+              <span class="text-base">🗓️</span>
+            </div>
+            <p id="rptTodayOrders" class="text-3xl font-extrabold text-stone-900 mt-2">0</p>
+            <p class="text-[11px] text-stone-400 mt-1">Today only</p>
+          </div>
+
+          <!-- Unfulfilled -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-stone-400">UNFULFILLED</span>
+              <span class="text-base">🟠</span>
+            </div>
+            <p id="rptUnfulfilled" class="text-3xl font-extrabold text-stone-900 mt-2">0</p>
+            <p id="rptUnfulfilledSub" class="text-[11px] text-stone-400 mt-1">0 live · 0 historical</p>
+          </div>
+
+          <!-- Pending -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-stone-400">PENDING</span>
+              <span class="text-base">⏳</span>
+            </div>
+            <p id="rptPending" class="text-3xl font-extrabold text-stone-900 mt-2">0</p>
+            <p id="rptPendingSub" class="text-[11px] text-stone-400 mt-1">0 live · 0 historical</p>
+          </div>
+
+          <!-- Booked / Dispatched -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-stone-400">BOOKED / DISPATCHED</span>
+              <span class="text-base">🚚</span>
+            </div>
+            <p id="rptBooked" class="text-3xl font-extrabold text-stone-900 mt-2">0</p>
+            <p id="rptBookedSub" class="text-[11px] text-stone-400 mt-1">0 live · 0 historical</p>
+          </div>
+
+          <!-- Delivered / Paid -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-stone-400">DELIVERED / PAID</span>
+              <span class="text-base">✅</span>
+            </div>
+            <p id="rptDelivered" class="text-3xl font-extrabold text-stone-900 mt-2">0</p>
+            <p id="rptDeliveredSub" class="text-[11px] text-stone-400 mt-1">0 delivered · 0 paid</p>
+          </div>
+
+          <!-- Returned -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-stone-400">RETURNED</span>
+              <span class="text-base">↩️</span>
+            </div>
+            <p id="rptReturned" class="text-3xl font-extrabold text-stone-900 mt-2">0</p>
+            <p id="rptReturnRate" class="text-[11px] text-rose-500 font-bold mt-1">0.0% return rate</p>
+          </div>
+        </div>
+
+        <!-- 3. STATUS BREAKDOWN STRIP (Row 2 from Reference Image 1) -->
+        <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm overflow-x-auto">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 min-w-[700px]">
+            <div>
+              <p class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">UNFULFILLED</p>
+              <p id="stripUnfulfilled" class="text-sm font-extrabold text-stone-900 mt-0.5">0 · PKR 0</p>
+              <p id="stripUnfulfilledSub" class="text-[10px] text-stone-400 mt-0.5">0 live · 0 historical</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider">PENDING</p>
+              <p id="stripPending" class="text-sm font-extrabold text-stone-900 mt-0.5">0 · PKR 0</p>
+              <p id="stripPendingSub" class="text-[10px] text-stone-400 mt-0.5">0 live · 0 historical</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-bold text-purple-700 uppercase tracking-wider">BOOKED</p>
+              <p id="stripBooked" class="text-sm font-extrabold text-stone-900 mt-0.5">0 · PKR 0</p>
+              <p id="stripBookedSub" class="text-[10px] text-stone-400 mt-0.5">0 live · 0 historical</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">BOOKED TODAY</p>
+              <p id="stripBookedToday" class="text-sm font-extrabold text-stone-900 mt-0.5">0</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">BOOKED YESTERDAY</p>
+              <p id="stripBookedYesterday" class="text-sm font-extrabold text-stone-900 mt-0.5">0</p>
+            </div>
+            <div>
+              <p class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">OLDER / HISTORICAL</p>
+              <p id="stripHistorical" class="text-sm font-extrabold text-stone-900 mt-0.5">0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. REVENUE FINANCIAL KPI CARDS (Row 3 from Reference Image 1) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+          <!-- Total Order Value -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-400">TOTAL ORDER VALUE</p>
+            <p id="finTotalValue" class="text-xl sm:text-2xl font-extrabold text-indigo-700 mt-1.5">PKR 0</p>
+            <p id="finTotalCount" class="text-[11px] text-stone-400 mt-1">0 all orders</p>
+          </div>
+
+          <!-- Delivered Revenue -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-400">DELIVERED REVENUE</p>
+            <p id="finDeliveredRev" class="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-1.5">PKR 0</p>
+            <p id="finDeliveredCount" class="text-[11px] text-stone-400 mt-1">0 delivered</p>
+          </div>
+
+          <!-- Unfulfilled Amount -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-400">UNFULFILLED AMOUNT</p>
+            <p id="finUnfulfilledAmt" class="text-xl sm:text-2xl font-extrabold text-orange-600 mt-1.5">PKR 0</p>
+            <p id="finUnfulfilledCount" class="text-[11px] text-stone-400 mt-1">0 needs action</p>
+          </div>
+
+          <!-- Pending Amount -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-400">PENDING AMOUNT</p>
+            <p id="finPendingAmt" class="text-xl sm:text-2xl font-extrabold text-amber-600 mt-1.5">PKR 0</p>
+            <p id="finPendingCount" class="text-[11px] text-stone-400 mt-1">0 awaiting reply</p>
+          </div>
+
+          <!-- Booked Amount -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-400">BOOKED AMOUNT</p>
+            <p id="finBookedAmt" class="text-xl sm:text-2xl font-extrabold text-purple-700 mt-1.5">PKR 0</p>
+            <p id="finBookedCount" class="text-[11px] text-stone-400 mt-1">0 booked / dispatched</p>
+          </div>
+
+          <!-- Returned Amount -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-stone-400">RETURNED AMOUNT</p>
+            <p id="finReturnedAmt" class="text-xl sm:text-2xl font-extrabold text-rose-600 mt-1.5">PKR 0</p>
+            <p id="finReturnedCount" class="text-[11px] text-stone-400 mt-1">0 returned</p>
+          </div>
+        </div>
+
+        <!-- 5. COURIER PERFORMANCE TABLE (Matches Reference Image 2) -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+            <div>
+              <h3 class="font-extrabold text-lg text-stone-900">Courier Performance</h3>
+              <p class="text-xs text-stone-400">تمام کوریئرز کی ڈلیوری ریشو، ریٹرن شرح اور کمائی کا تقابل</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-stone-200 bg-stone-50/70 text-stone-500 font-bold uppercase text-[11px] tracking-wider">
+                  <th class="text-left px-6 py-3.5">COURIER</th>
+                  <th class="text-center px-4 py-3.5">ORDERS</th>
+                  <th class="text-center px-4 py-3.5">BOOKED</th>
+                  <th class="text-center px-4 py-3.5">DELIVERED</th>
+                  <th class="text-center px-4 py-3.5">RETURNED</th>
+                  <th class="text-center px-4 py-3.5">OPEN</th>
+                  <th class="text-center px-4 py-3.5">DELIVERY %</th>
+                  <th class="text-center px-4 py-3.5">RETURN %</th>
+                  <th class="text-right px-6 py-3.5">REVENUE</th>
+                </tr>
+              </thead>
+              <tbody id="courierPerformanceBody">
+                <tr><td colspan="9" class="px-6 py-8 text-center text-stone-400">Loading courier metrics...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="px-6 py-3 bg-stone-50/50 border-t border-stone-100">
+            <p class="text-[11px] text-stone-400 font-medium">Live + historical courier data. Unrecognized historical courier rows stay visible as Historical / Unknown.</p>
+          </div>
+        </div>
+
+        <!-- 6. PRODUCT PERFORMANCE BREAKDOWN -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+            <div>
+              <h3 class="font-extrabold text-lg text-stone-900">Product Performance (پراڈکٹ وار کارکردگی)</h3>
+              <p class="text-xs text-stone-400">تمام پراڈکٹس کے فروخت شدہ یونٹس، ڈلیوری رزلٹ اور ریونیو کی تفصیلی رپورٹ</p>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-stone-200 bg-stone-50/70 text-stone-500 font-bold uppercase text-[11px] tracking-wider">
+                  <th class="text-left px-6 py-3.5">PRODUCT NAME</th>
+                  <th class="text-center px-4 py-3.5">TOTAL SOLD</th>
+                  <th class="text-center px-4 py-3.5">DELIVERED</th>
+                  <th class="text-center px-4 py-3.5">RETURNED</th>
+                  <th class="text-center px-4 py-3.5">SUCCESS %</th>
+                  <th class="text-right px-6 py-3.5">TOTAL REVENUE</th>
+                </tr>
+              </thead>
+              <tbody id="productPerformanceBody">
+                <tr><td colspan="6" class="px-6 py-8 text-center text-stone-400">Loading product metrics...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+
+<!-- ===== MODULE: PRODUCTS & HERO MANAGEMENT ===== -->
+      <section id="mod-products" class="module hidden space-y-6">
+        
+        <!-- 0. DUMMY / SAMPLE DATA CONTROL BAR -->
+        <div class="bg-gradient-to-r from-emerald-50 via-white to-teal-50 rounded-2xl border-2 border-emerald-300 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl shadow-xs border border-emerald-300 flex-shrink-0">
+              <svg class="w-6 h-6 text-emerald-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.614A2.993 2.993 0 009 9.35c.983-.983 2.56-.983 3.543 0a2.993 2.993 0 003.207-.614 3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.15c0 .414.336.75.75.75z"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="font-black text-sm text-stone-900">سٹور فرنٹ پراڈکٹس موڈ (Storefront Display Mode)</h4>
+                <span id="dummyBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  صرف اوریجنل پراڈکٹس فعال ہیں
+                </span>
+              </div>
+              <p class="text-xs text-stone-500 font-medium mt-0.5">
+                ویب سائٹ پر فرضی یا ڈمی پراڈکٹس بند کر کے صرف اپنی اصلی پراڈکٹس دکھائیں
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-xl border border-stone-200 shadow-2xs">
+            <span class="text-xs font-black text-stone-700" id="dummyToggleLabel">ڈمی پراڈکٹس: <b>بند (OFF)</b></span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="toggleDummyProducts" onchange="onToggleDummyProducts(this.checked)" class="sr-only peer">
+              <div class="w-11 h-6 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- 1. ACTIVE HERO FEATURED BANNER -->
+        <div class="bg-gradient-to-r from-amber-50 via-white to-amber-50/60 rounded-2xl border-2 border-amber-300 p-5 shadow-sm">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+            
+            <!-- Left: Current Active Hero Card Details -->
+            <div class="flex items-center gap-4">
+              <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-amber-400 bg-white shadow-md flex-shrink-0 flex items-center justify-center p-1">
+                <img id="activeHeroThumb" src="akseer-e-shabab.png" alt="Hero Product" class="w-full h-full object-cover object-center rounded-xl" onerror="this.onerror=null; this.src='akseer-e-shabab.png';" />
+                <span class="absolute -top-1.5 -right-1.5 bg-amber-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-black shadow border-2 border-white">⭐</span>
+              </div>
+              <div class="space-y-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 shadow-2xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> لائیو ہیرو کارڈ (Active Hero on Storefront)
+                  </span>
+                  <span class="text-xs text-stone-400 font-mono" id="activeHeroId">ID: 1</span>
+                </div>
+                <h3 class="text-base sm:text-lg font-black text-stone-900 leading-tight" id="activeHeroTitle">
+                  اکسیرِ شباب گولڈ کیپسول (Akseer-e-Shabab)
+                </h3>
+                <div class="flex flex-wrap items-center gap-3 text-xs">
+                  <span class="font-extrabold text-emerald-700 text-sm" id="activeHeroPrice">Rs. 1,850</span>
+                  <span class="text-stone-400 line-through" id="activeHeroRegPrice">Rs. 2,400</span>
+                  <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded text-[11px] font-bold border border-amber-200" id="activeHeroTag">گولڈ ہربل سپلیمنٹ</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Quick Selector & Actions -->
+            <div class="flex flex-wrap items-center gap-2.5 pt-3 lg:pt-0 border-t lg:border-t-0 border-amber-200/60">
+              <div class="w-full sm:w-auto">
+                <label class="block text-[11px] font-bold text-stone-500 mb-1">ہیرو پراڈکٹ تبدیل کریں:</label>
+                <select id="quickHeroSelect" onchange="onQuickHeroSelectChange(this.value)" class="w-full sm:w-64 border border-amber-300 rounded-xl px-3 py-2 text-xs font-bold bg-white text-stone-900 outline-none focus:ring-2 focus:ring-amber-500 shadow-xs">
+                  <option value="">-- منتخب کریں --</option>
+                </select>
+              </div>
+
+              <div class="flex items-center gap-2 mt-auto">
+                <button type="button" onclick="openHeroCustomModal()" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition shadow-xs flex items-center gap-1.5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/></svg>
+                  <span>کسٹمائز بیجز و تفصیل</span>
+                </button>
+                <button type="button" onclick="resetHeroToDefault()" title="Reset to Akseer Default" class="px-3 py-2 bg-white hover:bg-stone-100 text-stone-700 rounded-xl text-xs font-bold transition border border-stone-200 shadow-2xs">
+                  ری سیٹ
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 2. ADD / EDIT PRODUCT FORM -->
+        <div class="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-extrabold text-stone-900 flex items-center gap-2" id="productFormTitle">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <span>Add New Product</span>
+            </h3>
+            <span class="text-xs text-stone-400 font-medium">* لازمی خانے</span>
+          </div>
+
+          <input type="hidden" id="prodEditId" value="" />
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Product Name -->
+            <div>
+              <label class="block text-xs font-bold text-stone-600 mb-1">Product Name (اردو / انگریزی) *</label>
+              <input id="prodName" type="text" required placeholder="مثال: پیور مورنگا کیپسول" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Category -->
+            <div>
+              <label class="block text-xs font-bold text-stone-600 mb-1">Category</label>
+              <div class="flex gap-2">
+                <select id="prodCategory" class="flex-1 border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-500" onchange="toggleCustomCategory()">
+                  <option value="Herbal Capsules">Herbal Capsules</option>
+                  <option value="Pure Herbs">Pure Herbs</option>
+                  <option value="Essential Oils">Essential Oils</option>
+                  <option value="Personal Care">Personal Care</option>
+                  <option value="Bundle Packs">Bundle Packs</option>
+                  <option value="__custom__">+ Add New Category</option>
+                </select>
+              </div>
+              <input id="prodCustomCategory" type="text" placeholder="Type new category name..."
+                     class="hidden mt-2 w-full border border-stone-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Variant -->
+            <div>
+              <label class="block text-xs font-bold text-stone-600 mb-1">Variant (سائز / تعداد / وزن)</label>
+              <input id="prodVariant" type="text" placeholder="e.g. 30 CAPSULES / 100ml / 250g" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Selling Price -->
+            <div>
+              <label class="block text-xs font-bold text-stone-600 mb-1">Selling Price (Rs.) *</label>
+              <input id="prodPrice" type="number" min="0" required placeholder="1850" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold text-emerald-700 outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Compare Price -->
+            <div>
+              <label class="block text-xs font-bold text-stone-600 mb-1">Compare Price (Rs.)</label>
+              <input id="prodComparePrice" type="number" min="0" placeholder="2400" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Stock -->
+            <div>
+              <label class="block text-xs font-bold text-stone-600 mb-1">Stock Qty *</label>
+              <input id="prodStock" type="number" min="0" required placeholder="100" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- Primary Image: File Upload & URL with Live Preview -->
+            <div class="md:col-span-2">
+              <label class="block text-xs font-black text-stone-700 mb-1 flex items-center justify-between">
+                <span>Primary Image (بنیادی مین تصویر) *</span>
+                <span class="text-[11px] text-blue-600 font-bold">کمپیوٹر یا موبائل سے تصویر منتخب کریں</span>
+              </label>
+              <div class="flex flex-wrap items-center gap-2.5">
+                <!-- File Upload Button -->
+                <label class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs flex items-center gap-2 cursor-pointer transition active:scale-95 flex-shrink-0">
+                  <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+                  <span>تصویر اپلوڈ کریں</span>
+                  <input type="file" id="prodPrimaryFileInput" accept="image/*" class="hidden" onchange="handlePrimaryImageFile(this)" />
+                </label>
+
+                <!-- URL text input -->
+                <input id="prodImage" type="text" placeholder="یا تصویر کا ویب لنک (URL) یہاں پیسٹ کریں..." class="flex-1 min-w-[200px] border border-stone-300 rounded-xl px-4 py-2.5 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-white" oninput="updateProdImagePreview(this.value)" />
+
+                <!-- Clear / Reset Button -->
+                <button type="button" onclick="clearProdPrimaryImage()" class="px-3 py-2.5 text-xs font-bold bg-stone-100 hover:bg-stone-200 text-stone-600 border border-stone-300 rounded-xl transition flex-shrink-0 cursor-pointer" title="تصویر صاف کریں">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <!-- Live Preview Thumb -->
+                <div class="w-12 h-12 rounded-xl overflow-hidden border-2 border-stone-300 bg-stone-100 flex-shrink-0 flex items-center justify-center p-0.5 shadow-2xs">
+                  <img id="prodImagePreview" src="akseer-e-shabab.png" class="w-full h-full object-cover rounded-lg" onerror="this.onerror=null; this.src='akseer-e-shabab.png';" />
+                </div>
+              </div>
+              <p class="text-[11px] text-stone-400 mt-1">آپ اپنے موبائل یا کمپیوٹر سے کوئی بھی تصویر منتخب کر سکتے ہیں، سسٹم خودکار طریقے سے اسے کمپریس کر کے بہترین کوالٹی میں محفوظ کر لے گا۔</p>
+            </div>
+
+            <!-- Status -->
+            <div>
+              <label class="block text-xs font-bold text-stone-600 mb-1">Status</label>
+              <select id="prodStatus" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Active">Active (دستیاب)</option>
+                <option value="Draft">Draft (چھپائیں)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Feature on Hero Checkbox -->
+          <div class="mt-4 p-4 rounded-xl bg-amber-50/70 border border-amber-200 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" id="prodSetAsHero" class="w-5 h-5 rounded text-amber-600 focus:ring-amber-500 cursor-pointer" />
+              <div>
+                <label for="prodSetAsHero" class="text-sm font-bold text-stone-900 cursor-pointer flex items-center gap-1.5">
+                  <span>⭐ اس پراڈکٹ کو سٹور کے مین Hero Featured Card پر بھی لائیو لگائیں</span>
+                </label>
+                <p class="text-xs text-stone-500">محفوظ کرنے پر یہ پراڈکٹ خود بخود سٹور فرنٹ کے ٹاپ کارڈ پر سیٹ ہو جائے گی</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-amber-800 bg-amber-200/60 px-2.5 py-1 rounded-lg">ہیرو پروموشن</span>
+          </div>
+
+          <!-- Gallery Images (Multiple Photos) Section -->
+          <div class="mt-5 p-5 rounded-2xl bg-slate-50/80 border border-slate-200 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <label class="block text-xs sm:text-sm font-black text-stone-800 flex items-center gap-2">
+                <i class="fa-solid fa-images text-indigo-600"></i>
+                <span>پروڈکٹ کی اضافی گیلری تصاویر (Gallery Images / Multiple Photos)</span>
+              </label>
+              <span class="text-[11px] text-stone-500 font-bold bg-white px-2.5 py-1 rounded-lg border border-stone-200">
+                پروڈکٹ پیج پر مرکزی تصویر کے نیچے تھمب نیلز میں شو ہوں گی
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+              <div class="md:col-span-8">
+                <input id="prodGalleryImages" type="text" placeholder="اضافی تصاویر کے لنکس یا فائلیں نیچے سے منتخب کریں..." class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-indigo-500 bg-white" oninput="onGalleryTextInput(this.value)" />
+              </div>
+              <div class="md:col-span-4 flex items-center gap-2">
+                <label class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-3 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition active:scale-95">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <span>تصاویر منتخب کریں</span>
+                  <input type="file" id="prodGalleryFileInput" multiple accept="image/*" class="hidden" onchange="handleGalleryFileInput(this)" />
+                </label>
+                <button type="button" onclick="clearAllGalleryImages()" class="px-3 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-300 rounded-xl text-xs font-bold transition cursor-pointer" title="تمام اضافی تصاویر صاف کریں">
+                  صاف کریں
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Gallery Thumbnails Strip -->
+            <div id="prodGalleryPreviewStrip" class="flex flex-wrap items-center gap-2.5 pt-1">
+              <!-- Dynamically populated previews -->
+            </div>
+          </div>
+
+          <!-- Clinical Details & Product Page Tabs Setup -->
+          <div class="mt-5 p-5 rounded-2xl bg-emerald-50/40 border border-emerald-200 space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-emerald-200/80">
+              <i class="fa-solid fa-mortar-pestle text-emerald-700 text-lg"></i>
+              <h4 class="font-black text-sm sm:text-base text-emerald-950">
+                پروڈکٹ پیج کی تفصیلی معلومات و طبی ٹیبز (Product Details & Tabs)
+              </h4>
+            </div>
+
+            <!-- Full Description (Under Images on PDP) -->
+            <div>
+              <label class="block text-xs font-bold text-stone-700 mb-1 flex items-center justify-between">
+                <span>پروڈکٹ کا مکمل تعارف و تفصیل (Description — تصویروں کے نیچے نمایاں باکس میں نظر آئے گی)</span>
+                <span class="text-[11px] text-emerald-800 font-bold">نمایاں اوورویو</span>
+              </label>
+              <textarea id="prodDesc" rows="3" placeholder="پروڈکٹ کا تفصیلی تعارف اور عمومی افادیت درج کریں جو فرنٹ اینڈ پر تصویروں کے نیچے نمایاں باکس میں کسٹمر کو نظر آئے گی..." class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500 bg-white font-medium"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Health Benefits -->
+              <div>
+                <label class="block text-xs font-bold text-stone-700 mb-1 flex items-center justify-between">
+                  <span>طبی فوائد و افادیت (Health Benefits — ہر فائدہ نئی سطر میں)</span>
+                  <span class="text-[11px] text-emerald-700 font-bold">ٹیب 1</span>
+                </label>
+                <textarea id="prodBenefits" rows="3" placeholder="مثال:&#10;جسمانی و اعصابی کمزوری اور سستی کا خاتمہ&#10;قوت مدافعت اور اسٹیمینا کی قدرتی بحالی&#10;100% خالص دیسی جڑی بوٹیوں کا نچوڑ" class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500 bg-white font-medium"></textarea>
+                <p class="text-[10px] text-stone-400 mt-0.5">ہر فائدہ نئی سطر میں درج کریں تاکہ فرنٹ اینڈ پر خوبصورت بلٹس بن سکیں</p>
+              </div>
+
+              <!-- Dosage & Timing -->
+              <div>
+                <label class="block text-xs font-bold text-stone-700 mb-1 flex items-center justify-between">
+                  <span>طریقۂ استعمال و مقدارِ خوراک (Dosage & Instructions)</span>
+                  <span class="text-[11px] text-emerald-700 font-bold">ٹیب 2</span>
+                </label>
+                <textarea id="prodDosage" rows="3" placeholder="مثال: روزانہ 1 کیپسول رات سوتے وقت نیم گرم دودھ کے ساتھ استعمال کریں۔ کم از کم 30 سے 45 دن کا کورس مکمل کریں۔" class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500 bg-white font-medium"></textarea>
+                <p class="text-[10px] text-stone-400 mt-0.5">استعمال کا وقت، طریقہ اور کورس کی مدت</p>
+              </div>
+
+              <!-- Pure Ingredients -->
+              <div>
+                <label class="block text-xs font-bold text-stone-700 mb-1 flex items-center justify-between">
+                  <span>خالص نباتاتی اجزاء و فارمولا (100% Herbal Ingredients)</span>
+                  <span class="text-[11px] text-emerald-700 font-bold">ٹیب 3</span>
+                </label>
+                <textarea id="prodIngredients" rows="2" placeholder="مثال: خالص زعفران، سلاجیت، موصلی سفید، دارچینی، جوز بویا، کستوری اور نایاب ہربل نچوڑ۔" class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500 bg-white font-medium"></textarea>
+              </div>
+
+              <!-- Precautions -->
+              <div>
+                <label class="block text-xs font-bold text-stone-700 mb-1 flex items-center justify-between">
+                  <span>پرہیز و ضروری احتیاط (Precautions & Diet)</span>
+                  <span class="text-[11px] text-emerald-700 font-bold">پرہیز</span>
+                </label>
+                <textarea id="prodPrecautions" rows="2" placeholder="مثال: کھٹی، بادی، تیز مرچ مصالحے دار اور تلی ہوئی اشیاء سے مکمل پرہیز فرمائیں۔" class="w-full border border-stone-300 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500 bg-white font-medium"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="flex items-center gap-3 mt-6">
+            <button onclick="saveProduct()" id="prodSaveBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-7 py-3.5 rounded-xl transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <span>+ Add Product</span>
+            </button>
+            <button onclick="cancelProductEdit()" id="prodCancelBtn" class="hidden text-sm font-bold text-stone-500 hover:text-stone-800 px-5 py-3.5 rounded-xl border border-stone-200 transition cursor-pointer">
+              Cancel Edit
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. STORE PRODUCTS TABLE -->
+        <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-sm">
+          <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+            <div>
+              <h3 class="font-extrabold text-lg text-stone-900">Store Products Catalog</h3>
+              <p class="text-xs text-stone-400">تمام فعال مصنوعات کی فہرست اور ہیرو کارڈ کنٹرول</p>
+            </div>
+            <span id="productCount" class="text-xs font-bold bg-stone-100 text-stone-600 px-3 py-1 rounded-full border border-stone-200"></span>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-stone-200 bg-stone-50">
+                  <th class="text-left px-5 py-3.5 text-xs font-bold text-stone-500 uppercase">Image</th>
+                  <th class="text-left px-4 py-3.5 text-xs font-bold text-stone-500 uppercase">Product Name</th>
+                  <th class="text-left px-4 py-3.5 text-xs font-bold text-stone-500 uppercase">Category</th>
+                  <th class="text-right px-4 py-3.5 text-xs font-bold text-stone-500 uppercase">Price</th>
+                  <th class="text-right px-4 py-3.5 text-xs font-bold text-stone-500 uppercase">Stock</th>
+                  <th class="text-center px-4 py-3.5 text-xs font-bold text-stone-500 uppercase">Hero Status</th>
+                  <th class="text-left px-4 py-3.5 text-xs font-bold text-stone-500 uppercase">Status</th>
+                  <th class="text-center px-5 py-3.5 text-xs font-bold text-stone-500 uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsBody">
+                <tr><td colspan="8" class="px-5 py-8 text-center text-stone-400">Loading products...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===== MODULE 9: STORE SETTINGS ===== -->
+      <section id="mod-settings" class="module hidden space-y-6">
+
+        <!-- Executive Header & Action Bar -->
+        <div class="bg-white rounded-3xl p-6 md:p-7 border border-stone-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-700 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-800/20 flex-shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <div>
+              <h2 class="text-2xl font-black text-stone-900 tracking-tight">اسٹور اور فرنٹ اینڈ سیٹنگز (Store Settings)</h2>
+              <p class="text-sm text-stone-500 font-medium mt-1">واٹس ایپ ہیلپ لائن، برانڈنگ، ڈلیوری چارجز، سوشل لنکس اور سسٹم کنفیگریشن</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <a href="index.html" target="_blank" class="px-5 py-3 rounded-2xl border border-stone-200 hover:bg-stone-50 text-stone-700 text-sm font-bold transition flex items-center gap-2.5 shadow-2xs hover:shadow-xs">
+              <svg class="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+              <span>لائیو اسٹور دیکھیں</span>
+            </a>
+            <button onclick="saveStoreSettings()" id="saveSettingsBtn" class="px-7 py-3 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-sm font-black rounded-2xl shadow-md shadow-emerald-700/25 hover:shadow-lg transition-all flex items-center gap-2.5 cursor-pointer active:scale-95">
+              <svg id="saveSettingsIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              <span id="saveSettingsText">سیٹنگز محفوظ اور لائیو کریں</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Settings Cards Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          <!-- CARD 1: WHATSAPP & SUPPORT -->
+          <div class="bg-white rounded-3xl p-6 md:p-7 border border-emerald-200/80 shadow-sm space-y-6 relative overflow-hidden hover:shadow-md transition-shadow">
+            <div class="absolute -top-12 -right-12 w-40 h-40 bg-emerald-50/60 rounded-full pointer-events-none"></div>
+            
+            <div class="flex items-center justify-between pb-4 border-b border-stone-100">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg shadow-2xs">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </div>
+                <div>
+                  <h3 class="font-black text-lg text-stone-900">آفیشل واٹس ایپ اور ہیلپ لائن (WhatsApp)</h3>
+                  <p class="text-xs text-stone-500 font-medium">فرنٹ اینڈ ویب سائٹ اور تمام آرڈرز کے لیے واٹس ایپ نمبر</p>
+                </div>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                لائیو سنک
+              </span>
+            </div>
+
+            <!-- Primary WhatsApp Input -->
+            <div class="space-y-2">
+              <label class="block text-sm font-black text-stone-800">بنیادی اسٹور واٹس ایپ نمبر (Main Store WhatsApp)</label>
+              <div class="flex items-center gap-3">
+                <div class="flex-1 flex items-center bg-stone-50 border border-stone-300 rounded-2xl px-4 py-3 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 focus-within:bg-white transition shadow-xs">
+                  <span class="text-sm font-black text-stone-600 mr-2 flex items-center gap-1.5 font-mono">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> +92
+                  </span>
+                  <input type="text" id="settingWhatsapp" placeholder="332 0420994" class="w-full bg-transparent text-base font-black text-stone-900 outline-none font-mono tracking-wider placeholder:text-stone-300" />
+                </div>
+                <button type="button" onclick="testWhatsappLink()" class="px-5 py-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-sm font-black border border-emerald-200 transition shadow-xs flex items-center gap-2 flex-shrink-0 cursor-pointer" title="واٹس ایپ نمبر ٹیسٹ کریں">
+                  <span>ٹیسٹ کریں</span>
+                  <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+                </button>
+              </div>
+              <div class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-2xl text-xs text-emerald-900 leading-relaxed font-medium">
+                ⚡ <b>اہم نوٹ:</b> یہاں نیا نمبر لکھ کر <b>"سیٹنگز محفوظ اور لائیو کریں"</b> پر کلک کرتے ہی ویب سائٹ کے تمام واٹس ایپ آرڈر بٹنز، فلوٹنگ بٹن اور فوٹر خودکار طریقے سے اس نئے نمبر پر تبدیل ہو جائیں گے۔
+              </div>
+            </div>
+
+            <!-- Customer Support Phone & Timings -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-black text-stone-800 mb-1.5">کسٹمر سپورٹ فون (Support Phone)</label>
+                <input type="text" id="settingSupportPhone" placeholder="0332-0420994" class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm font-bold font-mono text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+              </div>
+              <div>
+                <label class="block text-sm font-black text-stone-800 mb-1.5">سپورٹ کے اوقات (Support Hours)</label>
+                <input type="text" id="settingSupportHours" placeholder="صبح 9:00 تا رات 11:00" class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+              </div>
+            </div>
+
+            <!-- Support Email -->
+            <div>
+              <label class="block text-sm font-black text-stone-800 mb-1.5">آفیشل ای میل ایڈریس (Official Email)</label>
+              <input type="email" id="settingEmail" placeholder="info@purelifefamilycare.com" class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+            </div>
+
+          </div>
+
+          <!-- CARD 2: BRANDING & PROFILE -->
+          <div class="bg-white rounded-3xl p-6 md:p-7 border border-stone-200 shadow-sm space-y-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 pb-4 border-b border-stone-100">
+              <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg shadow-2xs">
+                🏷️
+              </div>
+              <div>
+                <h3 class="font-black text-lg text-stone-900">اسٹور برانڈنگ اور شناخت (Store Branding)</h3>
+                <p class="text-xs text-stone-500 font-medium">اسٹور کا نام، نعرہ اور کوریئر سلپ پر پرنٹ ہونے والے کوائف</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-black text-stone-800 mb-1.5">اسٹور کا نام اردو (Urdu Name)</label>
+                <input type="text" id="settingStoreNameUrdu" placeholder="پیور لائف فیملی کیئر" class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+              </div>
+              <div>
+                <label class="block text-sm font-black text-stone-800 mb-1.5">اسٹور کا نام انگریزی (English Name)</label>
+                <input type="text" id="settingStoreNameEn" placeholder="Pure Life Family Care" class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-black text-stone-800 mb-1.5">ٹیگ لائن / سلوگن (Store Tagline)</label>
+              <input type="text" id="settingTagline" placeholder="100% خالص قدرتی و اصلی ہربل مصنوعات" class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+            </div>
+
+            <!-- Slips Sender Profile -->
+            <div class="p-4 md:p-5 rounded-2xl bg-stone-50/80 border border-stone-200 space-y-4">
+              <p class="text-sm font-black text-stone-900 flex items-center gap-2">
+                <span class="text-base">📦</span>
+                <span>کوریئر سلپس کے لیے سینڈر پروفائل (Slip Sender Details)</span>
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block text-xs font-black text-stone-700 mb-1">سینڈر نام (Sender Name on Slip)</label>
+                  <input type="text" id="settingSenderName" placeholder="Pure Life Family Care" class="w-full bg-white border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500" />
+                </div>
+                <div>
+                  <label class="block text-xs font-black text-stone-700 mb-1">سینڈر رابطہ فون (Sender Phone)</label>
+                  <input type="text" id="settingSenderPhone" placeholder="0335-6352625" class="w-full bg-white border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm font-bold font-mono text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500" />
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-black text-stone-700 mb-1">سینڈر پتہ برائے سلپ (Sender Return Address)</label>
+                <input type="text" id="settingSenderAddress" placeholder="Post Office Depalpur District Okara (56180)" class="w-full bg-white border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500" />
+              </div>
+            </div>
+
+          </div>
+
+          <!-- CARD 3: SHIPPING & DELIVERY -->
+          <div class="bg-white rounded-3xl p-6 md:p-7 border border-stone-200 shadow-sm space-y-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 pb-4 border-b border-stone-100">
+              <div class="w-11 h-11 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg shadow-2xs">
+                🚚
+              </div>
+              <div>
+                <h3 class="font-black text-lg text-stone-900">ڈلیوری اور کوریئر سیٹنگز (Shipping & Delivery)</h3>
+                <p class="text-xs text-stone-500 font-medium">ڈلیوری چارجز، فری ڈلیوری اور کوریئر پارٹنرز کا انتخاب</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-black text-stone-800 mb-1.5">ڈلیوری چارجز (Shipping Fee)</label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-3 text-sm font-black text-stone-400">Rs.</span>
+                  <input type="number" id="settingShippingFee" placeholder="200" class="w-full border border-stone-200 rounded-xl pl-11 pr-4 py-2.5 text-sm font-black text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+                </div>
+                <span class="text-xs text-stone-500 mt-1 block font-medium">0 لکھنے پر پورے پاکستان میں ڈلیوری مفت ہوگی</span>
+              </div>
+              <div>
+                <label class="block text-sm font-black text-stone-800 mb-1.5">مفت ڈلیوری کی شرط (Free Shipping Above)</label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-3 text-sm font-black text-stone-400">Rs.</span>
+                  <input type="number" id="settingFreeShippingMin" placeholder="2500" class="w-full border border-stone-200 rounded-xl pl-11 pr-4 py-2.5 text-sm font-black text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+                </div>
+                <span class="text-xs text-stone-500 mt-1 block font-medium">اس رقم سے زائد آرڈر پر ڈلیوری خودکار 0 ہو جائے گی</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-black text-stone-800 mb-1.5">ڈیفالٹ کوریئر پارٹنر (Default Booking Courier)</label>
+              <select id="settingDefaultCourier" class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm font-bold text-stone-800 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition">
+                <option value="Post Office">Post Office (پاکستان پوسٹ)</option>
+                <option value="Leopards">Leopards (لیپرڈز)</option>
+                <option value="TCS">TCS (ٹی سی ایس)</option>
+                <option value="M&P">M&P</option>
+                <option value="Call Courier">Call Courier</option>
+                <option value="PostEx">PostEx</option>
+                <option value="Trax">Trax</option>
+                <option value="COD" selected>COD (کیش آن ڈلیوری)</option>
+              </select>
+            </div>
+
+            <!-- All Courier Partners for Frontend Display -->
+            <div class="space-y-3 pt-4 border-t border-stone-150">
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-black text-stone-900">فرنٹ اینڈ پر کوریئر پارٹنرز (Courier Partners on Website)</label>
+                <button type="button" onclick="resetDefaultCouriers()" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer">ڈیفالٹ پر ری سیٹ کریں</button>
+              </div>
+              <input type="text" id="settingCourierPartners" placeholder="ٹی سی ایس، لیپرڈز، ٹریکس، پاکستان پوسٹ (کیش آن ڈیلیوری)" class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm font-bold text-stone-800 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+              
+              <!-- Quick Add Buttons -->
+              <div class="space-y-2">
+                <span class="text-xs font-bold text-stone-500 block">فوری شامل کرنے کے لیے کلک کریں:</span>
+                <div class="flex flex-wrap gap-2">
+                  <button type="button" onclick="addCourierToPartners('ٹی سی ایس')" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-800 border border-stone-200 transition cursor-pointer">+ ٹی سی ایس (TCS)</button>
+                  <button type="button" onclick="addCourierToPartners('لیپرڈز')" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-800 border border-stone-200 transition cursor-pointer">+ لیپرڈز (Leopards)</button>
+                  <button type="button" onclick="addCourierToPartners('پاکستان پوسٹ')" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-800 border border-stone-200 transition cursor-pointer">+ پاکستان پوسٹ (Post Office)</button>
+                  <button type="button" onclick="addCourierToPartners('ٹریکس')" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-800 border border-stone-200 transition cursor-pointer">+ ٹریکس (Trax)</button>
+                  <button type="button" onclick="addCourierToPartners('ایم اینڈ پی')" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-800 border border-stone-200 transition cursor-pointer">+ ایم اینڈ پی (M&P)</button>
+                  <button type="button" onclick="addCourierToPartners('کال کوریئر')" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-800 border border-stone-200 transition cursor-pointer">+ کال کوریئر</button>
+                  <button type="button" onclick="addCourierToPartners('پوسٹ ایکس')" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-emerald-50 hover:text-emerald-800 border border-stone-200 transition cursor-pointer">+ پوسٹ ایکس (PostEx)</button>
+                  <button type="button" onclick="addCourierToPartners('(کیش آن ڈیلیوری)')" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition cursor-pointer">+ (کیش آن ڈیلیوری)</button>
+                </div>
+              </div>
+              <p class="text-xs text-stone-500 leading-normal font-medium">
+                ⚡ <b>فرنٹ اینڈ ڈسپلے:</b> اوپر درج تمام کوریئر پارٹنرز ویب سائٹ کے فوٹر میں "کوریئر پارٹنرز:" کے نیچے لائیو نظر آئیں گے۔
+              </p>
+            </div>
+
+          </div>
+
+          <!-- CARD 4: ANNOUNCEMENT BAR & GOOGLE SHEET SYNC -->
+          <div class="bg-white rounded-3xl p-6 md:p-7 border border-stone-200 shadow-sm space-y-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 pb-4 border-b border-stone-100">
+              <div class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg shadow-2xs">
+                📢
+              </div>
+              <div>
+                <h3 class="font-black text-lg text-stone-900">انوؤنسمنٹ بار اور گوگل شیٹ کنکشن</h3>
+                <p class="text-xs text-stone-500 font-medium">فرنٹ اینڈ ٹاپ پٹی اور کلاؤڈ ڈیٹا بیس ہم آہنگی</p>
+              </div>
+            </div>
+
+            <!-- Announcement Bar Section -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-sm font-black text-stone-800">فرنٹ اینڈ انوؤنسمنٹ بار (Announcement Bar)</label>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="settingAnnouncementEnabled" checked class="sr-only peer">
+                  <div class="w-10 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                  <span class="ml-2.5 text-xs font-bold text-stone-700">فعال (Active)</span>
+                </label>
+              </div>
+              <input type="text" id="settingAnnouncementText" placeholder="🌿 پیور لائف فیملی کیئر | 100% خالص اور اصلی ہربل مصنوعات" class="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-emerald-500 bg-stone-50/50 focus:bg-white transition" />
+            </div>
+
+            <!-- Google Sheet Sync Info -->
+            <div class="pt-4 border-t border-stone-150 space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-sm font-black text-stone-800 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>Google Apps Script Web App URL</span>
+                </label>
+                <button type="button" onclick="testSettingsApiConnection()" class="text-xs font-black text-indigo-600 hover:text-indigo-800 underline cursor-pointer">
+                  کنکشن چیک کریں
+                </button>
+              </div>
+              <input type="text" id="settingApiUrl" readonly class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-xs font-mono text-stone-600 outline-none cursor-not-allowed select-all" />
+              <div id="settingsApiStatus" class="text-xs text-emerald-800 font-black bg-emerald-50 border border-emerald-200 px-4 py-2.5 rounded-2xl flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                <span>گوگل شیٹ کے ساتھ مکمل طور پر مربوط ہے (Live Connected)</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- CARD 5: SOCIAL MEDIA & COMMUNITY CHANNELS -->
+          <div class="lg:col-span-2 bg-white rounded-3xl p-6 md:p-7 border border-stone-200 shadow-sm space-y-6 hover:shadow-md transition-shadow">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-100 gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg shadow-2xs">
+                  <i class="fa-solid fa-share-nodes"></i>
+                </div>
+                <div>
+                  <h3 class="font-black text-lg text-stone-900">سوشل میڈیا اور کمیونٹی لنکس (Social Media & Channels)</h3>
+                  <p class="text-xs text-stone-500 font-medium">واٹس ایپ چینل، ٹیلی گرام، فیس بک، انسٹاگرام اور یوٹیوب وغیرہ کے آفیشل لنکس</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1.5 text-xs font-black px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 w-fit">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>فرنٹ اینڈ فوٹر پر لائیو ہم آہنگ</span>
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4.5">
+              <!-- WhatsApp Channel -->
+              <div class="space-y-2 bg-stone-50/70 p-4 rounded-2xl border border-stone-200 focus-within:border-emerald-500 focus-within:bg-emerald-50/20 transition">
+                <label class="block text-sm font-black text-stone-800 flex items-center gap-2.5">
+                  <span class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm shadow-2xs"><i class="fa-brands fa-whatsapp text-base"></i></span>
+                  <span>واٹس ایپ چینل (WhatsApp Channel)</span>
+                </label>
+                <input type="url" id="settingWhatsappChannel" placeholder="https://whatsapp.com/channel/..." class="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-500 bg-white" />
+                <span class="text-xs text-stone-400 block font-medium">اپنے آفیشل واٹس ایپ چینل کا مکمل لنک</span>
+              </div>
+
+              <!-- Telegram Channel -->
+              <div class="space-y-2 bg-stone-50/70 p-4 rounded-2xl border border-stone-200 focus-within:border-sky-500 focus-within:bg-sky-50/20 transition">
+                <label class="block text-sm font-black text-stone-800 flex items-center gap-2.5">
+                  <span class="w-7 h-7 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center text-sm shadow-2xs"><i class="fa-brands fa-telegram text-base"></i></span>
+                  <span>ٹیلی گرام چینل (Telegram Channel)</span>
+                </label>
+                <input type="url" id="settingTelegram" placeholder="https://t.me/purelifefamilycare" class="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-sky-500 bg-white" />
+                <span class="text-xs text-stone-400 block font-medium">ٹیلی گرام چینل یا پبلک یوزرنیم کا مکمل لنک</span>
+              </div>
+
+              <!-- Facebook Page -->
+              <div class="space-y-2 bg-stone-50/70 p-4 rounded-2xl border border-stone-200 focus-within:border-blue-500 focus-within:bg-blue-50/20 transition">
+                <label class="block text-sm font-black text-stone-800 flex items-center gap-2.5">
+                  <span class="w-7 h-7 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-sm shadow-2xs"><i class="fa-brands fa-facebook-f text-sm"></i></span>
+                  <span>فیس بک پیج (Facebook Page)</span>
+                </label>
+                <input type="url" id="settingFacebook" placeholder="https://facebook.com/purelifefamilycare" class="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+                <span class="text-xs text-stone-400 block font-medium">آفیشل فیس بک پیج کا مکمل یو آر ایل</span>
+              </div>
+
+              <!-- Instagram Profile -->
+              <div class="space-y-2 bg-stone-50/70 p-4 rounded-2xl border border-stone-200 focus-within:border-pink-500 focus-within:bg-pink-50/20 transition">
+                <label class="block text-sm font-black text-stone-800 flex items-center gap-2.5">
+                  <span class="w-7 h-7 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-sm shadow-2xs"><i class="fa-brands fa-instagram text-sm"></i></span>
+                  <span>انسٹاگرام اکاؤنٹ (Instagram)</span>
+                </label>
+                <input type="url" id="settingInstagram" placeholder="https://instagram.com/purelifefamilycare" class="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-pink-500 bg-white" />
+                <span class="text-xs text-stone-400 block font-medium">آفیشل انسٹاگرام پروفائل کا لنک</span>
+              </div>
+
+              <!-- YouTube Channel -->
+              <div class="space-y-2 bg-stone-50/70 p-4 rounded-2xl border border-stone-200 focus-within:border-red-500 focus-within:bg-red-50/20 transition">
+                <label class="block text-sm font-black text-stone-800 flex items-center gap-2.5">
+                  <span class="w-7 h-7 rounded-xl bg-red-100 text-red-600 flex items-center justify-center text-sm shadow-2xs"><i class="fa-brands fa-youtube text-sm"></i></span>
+                  <span>یوٹیوب چینل (YouTube)</span>
+                </label>
+                <input type="url" id="settingYoutube" placeholder="https://youtube.com/@purelifefamilycare" class="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-red-500 bg-white" />
+                <span class="text-xs text-stone-400 block font-medium">آفیشل یوٹیوب چینل کا لنک</span>
+              </div>
+
+              <!-- TikTok Profile -->
+              <div class="space-y-2 bg-stone-50/70 p-4 rounded-2xl border border-stone-200 focus-within:border-stone-500 focus-within:bg-stone-50 transition">
+                <label class="block text-sm font-black text-stone-800 flex items-center gap-2.5">
+                  <span class="w-7 h-7 rounded-xl bg-stone-900 text-white flex items-center justify-center text-sm shadow-2xs"><i class="fa-brands fa-tiktok text-sm"></i></span>
+                  <span>ٹک ٹاک اکاؤنٹ (TikTok)</span>
+                </label>
+                <input type="url" id="settingTiktok" placeholder="https://tiktok.com/@purelifefamilycare" class="w-full border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-stone-800 bg-white" />
+                <span class="text-xs text-stone-400 block font-medium">آفیشل ٹک ٹاک پروفائل کا لنک</span>
+              </div>
+            </div>
+
+            <div class="p-4 bg-indigo-50/70 border border-indigo-150 rounded-2xl flex items-start gap-3 text-xs md:text-sm text-indigo-950 font-medium">
+              <span class="text-lg flex-shrink-0">💡</span>
+              <p class="leading-relaxed">
+                <b>ڈسپلے کی سہولت:</b> جو لنکس آپ یہاں درج کریں گے، وہ ویب سائٹ کے فوٹر میں خوبصورت اور متحرک بٹنز کے ساتھ لائیو نظر آئیں گے۔ جو فیلڈ خالی رکھی جائے گی اس کا بٹن فوٹر میں خود بخود پوشیدہ رہے گا۔
+              </p>
+            </div>
+          </div>
+
+          <!-- CARD 6: MARKETING & PIXEL TRACKING (META FACEBOOK & TIKTOK) -->
+          <div class="lg:col-span-2 bg-white rounded-3xl p-6 md:p-8 border-2 border-indigo-200/90 shadow-md space-y-7 relative overflow-hidden hover:shadow-xl transition-all">
+            <div class="absolute -top-16 -right-16 w-52 h-52 bg-gradient-to-br from-blue-50 via-indigo-50 to-pink-50 rounded-full pointer-events-none"></div>
+
+            <!-- Card Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-stone-150 gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-13 h-13 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-indigo-500/25 flex-shrink-0">
+                  <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2.5">
+                    <h3 class="font-black text-xl md:text-2xl text-stone-900">مارکیٹنگ و پکسل ٹریکنگ (Meta & TikTok Pixel)</h3>
+                    <span class="px-3 py-1 rounded-full text-xs font-black bg-indigo-100 text-indigo-800 border border-indigo-200 flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      ای کامرس آٹو ٹریکنگ
+                    </span>
+                  </div>
+                  <p class="text-xs md:text-sm text-stone-500 font-medium mt-1">
+                    فیس بک، انسٹاگرام اور ٹک ٹاک ایڈز کے لیے تمام کنورژنز، ویو کونٹینٹ، ایڈ ٹو کارٹ اور پرچیز ایونٹس کی خودکار ٹریکنگ
+                  </p>
+                </div>
+              </div>
+
+              <!-- Test Fire Events Button -->
+              <div class="flex items-center gap-3">
+                <button type="button" onclick="testFirePixelsFromAdmin()" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 text-indigo-900 border border-indigo-200 text-xs md:text-sm font-black transition flex items-center gap-2 shadow-2xs hover:shadow-xs cursor-pointer active:scale-95">
+                  <i class="fa-solid fa-bolt text-indigo-600"></i>
+                  <span>پکسل ٹیسٹ فائر کریں (Test Events)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Pixel Grid: Meta (Facebook) & TikTok -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+              <!-- SUB-CARD: META / FACEBOOK PIXEL -->
+              <div class="bg-gradient-to-b from-blue-50/50 via-white to-white rounded-3xl p-6 border-2 border-blue-200/80 shadow-xs space-y-5">
+                <div class="flex items-center justify-between pb-3.5 border-b border-blue-150">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl shadow-md shadow-blue-600/20">
+                      <i class="fa-brands fa-facebook-f"></i>
+                    </div>
+                    <div>
+                      <h4 class="font-black text-base md:text-lg text-slate-900">میٹا (فیس بک و انسٹاگرام) پکسل</h4>
+                      <p class="text-xs text-blue-700 font-bold">Meta Pixel (Facebook Ads Manager)</p>
+                    </div>
+                  </div>
+
+                  <!-- Enable Switch -->
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="settingMetaPixelEnabled" checked class="sr-only peer" onchange="updatePixelStatusBadges()">
+                    <div class="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+
+                <!-- Meta Pixel ID Input -->
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between">
+                    <label class="block text-xs md:text-sm font-black text-stone-800">
+                      میٹا پکسل آئی ڈی (Meta Pixel ID)
+                    </label>
+                    <span id="metaPixelStatusBadge" class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+                      غیر فعال
+                    </span>
+                  </div>
+                  <div class="flex items-center bg-white border-2 border-blue-200 rounded-2xl px-4 py-3 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/20 transition shadow-2xs">
+                    <i class="fa-solid fa-fingerprint text-blue-500 ml-2.5 text-base"></i>
+                    <input type="text" id="settingMetaPixelId" placeholder="مثلاً: 1234567890123456" oninput="updatePixelStatusBadges()" class="w-full bg-transparent text-sm md:text-base font-black font-mono text-stone-900 outline-none tracking-wider placeholder:text-stone-300 placeholder:font-sans" />
+                  </div>
+                  <p class="text-xs text-stone-500 font-medium leading-relaxed">
+                    فیس بک ایونٹس مینیجر (Events Manager > Settings) سے اپنا 15 یا 16 ہندسوں کا پکسل آئی ڈی کاپی کر کے یہاں درج کریں۔
+                  </p>
+                </div>
+
+                <!-- Meta Test Event Code (Optional) -->
+                <div class="space-y-1.5 pt-2 border-t border-blue-100/70">
+                  <label class="block text-xs font-black text-stone-700">
+                    ٹیسٹ ایونٹ کوڈ (Meta Test Events Code - اختیاری)
+                  </label>
+                  <input type="text" id="settingMetaTestEventCode" placeholder="مثلاً: TEST12345" class="w-full bg-white border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-stone-800 outline-none focus:ring-2 focus:ring-blue-500 font-bold" />
+                  <span class="text-[11px] text-stone-400 block font-medium">ایڈز مینیجر کے "Test Events" ٹیب میں لائیو براؤزنگ ٹیسٹ کے لیے کوڈ (عام دنوں میں خالی چھوڑ دیں)</span>
+                </div>
+              </div>
+
+              <!-- SUB-CARD: TIKTOK PIXEL -->
+              <div class="bg-gradient-to-b from-stone-50/50 via-white to-white rounded-3xl p-6 border-2 border-stone-200/90 shadow-xs space-y-5">
+                <div class="flex items-center justify-between pb-3.5 border-b border-stone-150">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-950 text-white flex items-center justify-center text-xl shadow-md shadow-slate-900/30">
+                      <i class="fa-brands fa-tiktok"></i>
+                    </div>
+                    <div>
+                      <h4 class="font-black text-base md:text-lg text-slate-900">ٹک ٹاک پکسل</h4>
+                      <p class="text-xs text-rose-600 font-bold">TikTok Ads Manager (Events)</p>
+                    </div>
+                  </div>
+
+                  <!-- Enable Switch -->
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="settingTiktokPixelEnabled" checked class="sr-only peer" onchange="updatePixelStatusBadges()">
+                    <div class="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-950"></div>
+                  </label>
+                </div>
+
+                <!-- TikTok Pixel ID Input -->
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between">
+                    <label class="block text-xs md:text-sm font-black text-stone-800">
+                      ٹک ٹاک پکسل آئی ڈی (TikTok Pixel ID)
+                    </label>
+                    <span id="tiktokPixelStatusBadge" class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+                      غیر فعال
+                    </span>
+                  </div>
+                  <div class="flex items-center bg-white border-2 border-stone-300 rounded-2xl px-4 py-3 focus-within:border-slate-950 focus-within:ring-2 focus-within:ring-slate-900/20 transition shadow-2xs">
+                    <i class="fa-solid fa-code text-stone-600 ml-2.5 text-base"></i>
+                    <input type="text" id="settingTiktokPixelId" placeholder="مثلاً: C1234567890ABCDEFGH" oninput="updatePixelStatusBadges()" class="w-full bg-transparent text-sm md:text-base font-black font-mono text-stone-900 outline-none tracking-wider placeholder:text-stone-300 placeholder:font-sans" />
+                  </div>
+                  <p class="text-xs text-stone-500 font-medium leading-relaxed">
+                    ٹک ٹاک ایڈز مینیجر کے Assets > Events (Web Events) سے اپنا پکسل کوڈ یا ID کاپی کر کے یہاں چسپاں کریں۔
+                  </p>
+                </div>
+
+                <!-- TikTok Quick Helper Note -->
+                <div class="pt-2 border-t border-stone-150">
+                  <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200 text-xs text-stone-600 leading-relaxed font-medium">
+                    ⚡ <b>TikTok Event Tracking:</b> ٹک ٹاک ایڈز مینیجر کے لیے CompletePayment, AddToCart اور ViewContent کے تمام پیرامیٹرز بشمول کرنسی (PKR) خود بخود بھیجے جائیں گے۔
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Automatic E-Commerce Event Triggers Showcase -->
+            <div class="p-5 md:p-6 bg-slate-900 text-white rounded-3xl space-y-4 shadow-inner">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-8 h-8 rounded-xl bg-gold-500/20 text-gold-400 flex items-center justify-center text-sm font-black border border-gold-400/30">
+                    <i class="fa-solid fa-network-wired"></i>
+                  </span>
+                  <div>
+                    <h5 class="font-black text-sm md:text-base text-gold-200">خودکار ایونٹ ٹریکنگ کا شفاف جائزہ (Real-Time E-Commerce Events)</h5>
+                    <p class="text-xs text-stone-400">کوئی کوڈنگ کرنے کی ضرورت نہیں، یہ 6 ایونٹس ویب سائٹ پر خود بخود فائر ہوں گے:</p>
+                  </div>
+                </div>
+                <span class="hidden sm:inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                  ✓ 100% مکمل کنفیگرڈ
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center">
+                <div class="bg-white/5 rounded-2xl p-3 border border-white/10 hover:border-gold-400/40 transition">
+                  <div class="text-lg">👁️</div>
+                  <div class="font-mono text-xs font-bold text-gold-300 mt-1">PageView</div>
+                  <div class="text-[11px] text-stone-300 mt-0.5">ہر پیج وزٹ پر</div>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-3 border border-white/10 hover:border-gold-400/40 transition">
+                  <div class="text-lg">🔍</div>
+                  <div class="font-mono text-xs font-bold text-gold-300 mt-1">ViewContent</div>
+                  <div class="text-[11px] text-stone-300 mt-0.5">پروڈکٹ تفصیل و قیمت</div>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-3 border border-white/10 hover:border-gold-400/40 transition">
+                  <div class="text-lg">🛒</div>
+                  <div class="font-mono text-xs font-bold text-gold-300 mt-1">AddToCart</div>
+                  <div class="text-[11px] text-stone-300 mt-0.5">کارٹ و بنڈل ڈیل</div>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-3 border border-white/10 hover:border-gold-400/40 transition">
+                  <div class="text-lg">📝</div>
+                  <div class="font-mono text-xs font-bold text-gold-300 mt-1">InitiateCheckout</div>
+                  <div class="text-[11px] text-stone-300 mt-0.5">آرڈر فارم شروع پر</div>
+                </div>
+                <div class="bg-white/10 rounded-2xl p-3 border border-emerald-500/50 hover:border-emerald-400 transition bg-emerald-950/20">
+                  <div class="text-lg">🏆</div>
+                  <div class="font-mono text-xs font-black text-emerald-400 mt-1">Purchase</div>
+                  <div class="text-[11px] text-stone-200 mt-0.5 font-bold">آرڈر تصدیق (COD)</div>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-3 border border-white/10 hover:border-gold-400/40 transition">
+                  <div class="text-lg">💬</div>
+                  <div class="font-mono text-xs font-bold text-gold-300 mt-1">Contact / Lead</div>
+                  <div class="text-[11px] text-stone-300 mt-0.5">واٹس ایپ آرڈر کلک</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- CARD 7: ADMIN LOGIN CREDENTIALS & SECURITY -->
+          <div class="lg:col-span-2 bg-white rounded-3xl p-6 md:p-8 border-2 border-emerald-300 shadow-md space-y-6 relative overflow-hidden hover:shadow-xl transition-all">
+            <div class="absolute -top-14 -left-14 w-48 h-48 bg-emerald-50 rounded-full pointer-events-none"></div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-150 gap-3">
+              <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-700 to-teal-600 text-white flex items-center justify-center text-xl shadow-md shadow-emerald-800/20">
+                  <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                  <h3 class="font-black text-xl text-stone-900">ایڈمن لاگ ان و پاس ورڈ سیکیورٹی (Admin Login & Password)</h3>
+                  <p class="text-xs md:text-sm text-stone-500 font-medium">ایڈمن پورٹل کا یوزرنیم اور پاس ورڈ یہاں سے آسانی سے تبدیل کریں</p>
+                </div>
+              </div>
+              <span class="px-3.5 py-1.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 w-fit">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                کلاؤڈ سیکیور سنک
+              </span>
+            </div>
+
+            <!-- Form Grid -->
+            <form onsubmit="handleUpdateAdminPassword(event)" class="space-y-5">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                
+                <!-- Current Password -->
+                <div class="space-y-2">
+                  <label class="block text-xs font-black text-stone-800">
+                    موجودہ پاس ورڈ (Current Password) <span class="text-red-500">*</span>
+                  </label>
+                  <div class="flex items-center bg-stone-50 border border-stone-300 rounded-2xl px-4 py-3 focus-within:border-emerald-600 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 transition">
+                    <i class="fa-solid fa-key text-stone-400 ml-2.5"></i>
+                    <input type="password" id="secCurrentPassword" placeholder="موجودہ پاس ورڈ درج کریں" required class="w-full bg-transparent text-sm font-bold text-stone-900 outline-none" />
+                    <button type="button" onclick="togglePasswordVisibility('secCurrentPassword', this)" class="text-stone-400 hover:text-stone-600 mr-1 p-1">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+                  </div>
+                  <span class="text-[11px] text-stone-400 font-medium">تصدیق کے لیے اپنا موجودہ فعال پاس ورڈ درج کریں۔</span>
+                </div>
+
+                <!-- New Username -->
+                <div class="space-y-2">
+                  <label class="block text-xs font-black text-stone-800">
+                    نیا یوزرنیم (New Username) <span class="text-stone-400 font-normal">(اختیاری)</span>
+                  </label>
+                  <div class="flex items-center bg-stone-50 border border-stone-300 rounded-2xl px-4 py-3 focus-within:border-emerald-600 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 transition">
+                    <i class="fa-solid fa-user-pen text-stone-400 ml-2.5"></i>
+                    <input type="text" id="secNewUsername" placeholder="admin" class="w-full bg-transparent text-sm font-bold text-stone-900 outline-none font-mono" />
+                  </div>
+                  <span class="text-[11px] text-stone-400 font-medium">اگر تبدیل نہیں کرنا تو خالی چھوڑ دیں (پہلے سے: admin)</span>
+                </div>
+
+                <!-- New Password -->
+                <div class="space-y-2">
+                  <label class="block text-xs font-black text-stone-800">
+                    نیا پاس ورڈ (New Password) <span class="text-red-500">*</span>
+                  </label>
+                  <div class="flex items-center bg-stone-50 border border-stone-300 rounded-2xl px-4 py-3 focus-within:border-emerald-600 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 transition">
+                    <i class="fa-solid fa-lock text-stone-400 ml-2.5"></i>
+                    <input type="password" id="secNewPassword" placeholder="نیا مضبوط پاس ورڈ لکھیں" required minlength="6" class="w-full bg-transparent text-sm font-bold text-stone-900 outline-none" />
+                    <button type="button" onclick="togglePasswordVisibility('secNewPassword', this)" class="text-stone-400 hover:text-stone-600 mr-1 p-1">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+                  </div>
+                  <span class="text-[11px] text-stone-400 font-medium">کم از کم 6 ہندسے یا حروف پر مشتمل ہو</span>
+                </div>
+
+                <!-- Confirm New Password -->
+                <div class="space-y-2">
+                  <label class="block text-xs font-black text-stone-800">
+                    نئے پاس ورڈ کی تصدیق (Confirm New Password) <span class="text-red-500">*</span>
+                  </label>
+                  <div class="flex items-center bg-stone-50 border border-stone-300 rounded-2xl px-4 py-3 focus-within:border-emerald-600 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 transition">
+                    <i class="fa-solid fa-circle-check text-stone-400 ml-2.5"></i>
+                    <input type="password" id="secConfirmPassword" placeholder="دوبارہ نیا پاس ورڈ لکھیں" required minlength="6" class="w-full bg-transparent text-sm font-bold text-stone-900 outline-none" />
+                    <button type="button" onclick="togglePasswordVisibility('secConfirmPassword', this)" class="text-stone-400 hover:text-stone-600 mr-1 p-1">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+                  </div>
+                  <span class="text-[11px] text-stone-400 font-medium">دونوں پاس ورڈز کا ایک جیسا ہونا لازمی ہے</span>
+                </div>
+
+              </div>
+
+              <!-- Action Button & Feedback -->
+              <div class="pt-3 border-t border-stone-150 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-stone-500 font-medium">
+                  ⚡ پاس ورڈ تبدیل کرتے ہی یہ فوری طور پر گوگل شیٹ اور لوکل ڈیوائس میں محفوظ ہو جائے گا۔
+                </p>
+                <button type="submit" id="secSavePasswordBtn" class="px-7 py-3 bg-gradient-to-r from-emerald-700 to-teal-800 hover:from-emerald-800 hover:to-teal-900 text-white font-black text-sm rounded-2xl shadow-md shadow-emerald-800/20 transition flex items-center gap-2 cursor-pointer active:scale-95">
+                  <i class="fa-solid fa-shield-check text-gold-300"></i>
+                  <span>پاس ورڈ محفوظ کریں (Update Password)</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- 4. HERO CARD FINE-TUNING MODAL -->
+      <div id="heroCustomModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 border border-amber-200 max-h-[90vh] overflow-y-auto">
+          <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">⭐</span>
+              <h3 class="font-extrabold text-lg text-stone-900">Hero Card بیجز اور تفصیل کسٹمائز کریں</h3>
+            </div>
+            <button onclick="closeHeroCustomModal()" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center font-bold">&times;</button>
+          </div>
+
+          <div class="space-y-3.5 text-stone-700 text-xs">
+            <div>
+              <label class="block font-bold mb-1">پراڈکٹ کا عنوان (Title)</label>
+              <input id="modalHeroTitle" type="text" class="w-full border border-stone-300 rounded-xl px-3.5 py-2 text-sm font-bold text-stone-900 outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold mb-1">سیل پرائس (Rs.)</label>
+                <input id="modalHeroPrice" type="number" class="w-full border border-stone-300 rounded-xl px-3.5 py-2 text-sm font-bold text-emerald-700 outline-none focus:ring-2 focus:ring-amber-500" />
+              </div>
+              <div>
+                <label class="block font-bold mb-1">کٹ پرائس (Rs.)</label>
+                <input id="modalHeroRegPrice" type="number" class="w-full border border-stone-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-amber-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold mb-1">امیج فائل یا URL</label>
+              <div class="flex gap-2">
+                <input id="modalHeroImg" type="text" class="flex-1 border border-stone-300 rounded-xl px-3.5 py-2 text-sm outline-none focus:ring-2 focus:ring-amber-500" />
+                <button type="button" onclick="document.getElementById('modalHeroImg').value='akseer-e-shabab.png'" class="px-3 py-2 bg-amber-50 border border-amber-300 rounded-xl font-bold text-amber-900 text-xs">Akseer</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold mb-1">ٹاپ بیج (Top Floating Badge)</label>
+                <input id="modalHeroTopBadge" type="text" placeholder="کیش آن ڈیلیوری دستیاب ہے" class="w-full border border-stone-300 rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-amber-500" />
+              </div>
+              <div>
+                <label class="block font-bold mb-1">کیپسول بیج (Pill Badge)</label>
+                <input id="modalHeroPillBadge" type="text" placeholder="30 کیپسول" class="w-full border border-stone-300 rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-amber-500" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold mb-1">سب ٹیگ 1 (Tag 1)</label>
+                <input id="modalHeroTag1" type="text" placeholder="گولڈ ہربل سپلیمنٹ" class="w-full border border-stone-300 rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-amber-500" />
+              </div>
+              <div>
+                <label class="block font-bold mb-1">سب ٹیگ 2 (Tag 2)</label>
+                <input id="modalHeroTag2" type="text" placeholder="حیرت انگیز اور دیرپا نتائج" class="w-full border border-stone-300 rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-amber-500" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold mb-1">اوارڈ بیج (Award Ribbon)</label>
+              <input id="modalHeroAwardBadge" type="text" placeholder="سب سے زیادہ فروخت ہونے والا فارمولا" class="w-full border border-stone-300 rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+
+            <div>
+              <label class="block font-bold mb-1">مختصر فوائد و تفصیل (Description)</label>
+              <textarea id="modalHeroDesc" rows="3" class="w-full border border-stone-300 rounded-xl px-3.5 py-2 text-xs outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+            </div>
+
+            <input type="hidden" id="modalHeroProductId" value="1" />
+          </div>
+
+          <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+            <button onclick="closeHeroCustomModal()" class="px-4 py-2 rounded-xl border border-stone-200 text-stone-600 font-bold text-xs hover:bg-stone-100 transition">منسوخ</button>
+            <button onclick="saveHeroFromModal()" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs rounded-xl transition shadow-md">محفوظ اور لائیو کریں</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. EDIT EXPENSE MODAL -->
+      <div id="editExpenseModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-stone-200">
+          <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-base shadow-2xs">
+                ✏️
+              </div>
+              <div>
+                <h3 class="font-black text-lg text-stone-900">خرچہ تبدیل / ایڈیٹ کریں</h3>
+                <p class="text-xs text-stone-400">Expense Record Update</p>
+              </div>
+            </div>
+            <button onclick="closeEditExpenseModal()" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center font-bold cursor-pointer">&times;</button>
+          </div>
+
+          <form onsubmit="saveEditedExpense(event)" class="space-y-4 text-stone-800">
+            <input type="hidden" id="editExpIndex" />
+            
+            <div>
+              <label class="block text-xs font-black text-stone-700 mb-1">تاریخ (Date)</label>
+              <input type="date" id="editExpDate" required class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-black text-stone-700 mb-1">کیٹیگری (Category)</label>
+              <select id="editExpCategory" class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                <option value="Facebook Ads">Facebook Ads</option>
+                <option value="Product Cost">Product Cost</option>
+                <option value="Delivery Charges">Delivery Charges</option>
+                <option value="Packing">Packing</option>
+                <option value="Rent">Rent</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Salary">Salary</option>
+                <option value="Transport">Transport</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-black text-stone-700 mb-1">رقم (Amount Rs.)</label>
+              <input type="number" id="editExpAmount" min="1" required class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-black text-rose-600 outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-black text-stone-700 mb-1">تفصیل / نوٹ (Description)</label>
+              <input type="text" id="editExpDesc" placeholder="Note / Details..." class="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+
+            <div class="pt-3 border-t border-stone-100 flex items-center justify-end gap-2.5">
+              <button type="button" onclick="closeEditExpenseModal()" class="px-5 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-bold text-xs hover:bg-stone-100 transition cursor-pointer">منسوخ</button>
+              <button type="submit" id="saveEditExpenseBtn" class="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black text-xs rounded-xl transition shadow-md cursor-pointer flex items-center gap-1.5">
+                <span>تبدیلی محفوظ کریں</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ========== FORGOT PASSWORD MODAL ========== -->
+<div id="forgotPasswordModal" class="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border-2 border-emerald-400/40 space-y-5 text-right">
+    <div class="flex items-center justify-between pb-3 border-b border-stone-150">
+      <button onclick="closeForgotPasswordModal()" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center font-bold cursor-pointer transition">&times;</button>
+      <div class="flex items-center gap-2">
+        <h3 class="font-black text-lg text-stone-900">سیکیورٹی و پاس ورڈ ریکوری</h3>
+        <span class="text-xl">🔐</span>
+      </div>
+    </div>
+
+    <div class="space-y-3.5 text-xs sm:text-sm text-stone-700 leading-relaxed font-medium">
+      <p class="text-stone-700">
+        حفاظتی وجوہات کی بنا پر ایڈمن پاس ورڈ اسکرین پر ظاہر نہیں کیا جاتا۔ اگر آپ اپنا پاس ورڈ بھول گئے ہیں، تو نیچے دیے گئے بٹن سے اپنے رجسٹرڈ آفیشل واٹس ایپ پر فوری سیکیورٹی ریکویسٹ بھیجیں۔
+      </p>
+
+      <div class="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200 text-emerald-950 text-xs leading-relaxed space-y-1">
+        <div class="flex items-center gap-1.5 font-bold text-emerald-900">
+          <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+          <span>محفوظ واٹس ایپ ویریفکیشن:</span>
+        </div>
+        <p class="text-[11px] text-emerald-800">
+          واٹس ایپ بٹن پر کلک کرنے سے ایک خودکار تصدیقی ریفرنس کوڈ جنریٹ ہوگا جس سے سٹور اونر کے واٹس ایپ پر پاس ورڈ تصدیق کی درخواست جائے گی۔
+        </p>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 text-stone-600 text-xs leading-relaxed">
+        <span class="font-bold text-stone-800">💡 سٹور اونر کے لیے متبادل حل:</span>
+        <p class="text-[11px] text-stone-500 mt-0.5">
+          چونکہ پاس ورڈ آپ کی نجی گوگل شیٹ کے <b>Store_Config</b> ٹیب میں بھی محفوظ ہوتا ہے، اس لیے آپ اپنی گوگل شیٹ کھول کر بھی کسی بھی وقت پاس ورڈ دیکھ یا تبدیل کر سکتے ہیں۔
+        </p>
+      </div>
+    </div>
+
+    <div class="pt-1 flex flex-col gap-2.5">
+      <button type="button" onclick="sendPasswordResetHint()" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black rounded-xl text-xs sm:text-sm shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition">
+        <i class="fa-brands fa-whatsapp text-lg text-emerald-200"></i>
+        <span>آفیشل واٹس ایپ پر پاس ورڈ ری سیٹ کریں</span>
+      </button>
+      <button type="button" onclick="closeForgotPasswordModal()" class="w-full py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold rounded-xl text-xs transition cursor-pointer">
+        واپس لاگ ان اسکرین پر جائیں
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PRINT CONTAINER -->
+<div id="printArea" class="no-print"></div>
+
+<script src="admin.js?v=18.0"></script>
+</body>
+</html>
