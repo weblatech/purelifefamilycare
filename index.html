@@ -2867,11 +2867,22 @@
         }
       });
 
-      // Live multi-tab sync
+      // Live multi-tab sync (Instant reaction when product is deleted or updated in admin)
       window.addEventListener("storage", (e) => {
         if (e.key === "pl_store_settings" && e.newValue) {
           try {
             applyStoreSettings(JSON.parse(e.newValue));
+          } catch (err) {}
+        }
+        if (e.key === "pl_custom_products" || e.key === "pl_product_deleted_timestamp") {
+          try {
+            const raw = localStorage.getItem("pl_custom_products");
+            syncCatalogList(raw ? JSON.parse(raw) : []);
+          } catch (err) {}
+        }
+        if (e.key === "pl_hero_featured" && e.newValue) {
+          try {
+            applyHeroFeaturedProduct(JSON.parse(e.newValue));
           } catch (err) {}
         }
       });
@@ -2879,28 +2890,8 @@
       // Check local cache for immediate products catalog load (zero delay / no dummy flicker)
       try {
         const cachedProds = localStorage.getItem("pl_custom_products");
-        if (cachedProds) {
-          const parsed = JSON.parse(cachedProds);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            const activeProds = parsed.filter(p => {
-              const status = (p.Status || p.status || "Active").toString().toLowerCase();
-              return status !== "draft" && status !== "hidden";
-            });
-            if (activeProds.length > 0) {
-              const mapped = activeProds.map((p, idx) => normalizeAdminProduct(p, idx));
-              const showDummy = (window.STORE_SHOW_DUMMY_PRODUCTS === true || localStorage.getItem("pl_show_dummy_products") === "true");
-              if (!showDummy) {
-                productsData = [...mapped];
-              } else {
-                const adminNames = new Set(mapped.map(m => m.nameUrdu.trim().toLowerCase()));
-                const adminIds = new Set(mapped.map(m => m.id.toString()));
-                const nonDuplicateDefaults = defaultProducts.filter(d => 
-                  !adminNames.has(d.nameUrdu.trim().toLowerCase()) && !adminIds.has(d.id.toString())
-                );
-                productsData = [...mapped, ...nonDuplicateDefaults];
-              }
-            }
-          }
+        if (cachedProds !== null) {
+          syncCatalogList(JSON.parse(cachedProds));
         }
       } catch (e) {
         console.warn("Product cache bootstrap error:", e);
@@ -3211,11 +3202,10 @@
             : productsData[existingIdx].galleryImages
         };
       } else {
+        // Only insert into productsData if dummy products are ON and catalog is empty (initial state)
         const showDummy = (window.STORE_SHOW_DUMMY_PRODUCTS === true || localStorage.getItem("pl_show_dummy_products") === "true");
-        if (!showDummy && productsData.length > 0 && productsData[0].id === "1") {
+        if (showDummy && productsData.length === 0) {
           productsData = [heroProductItem];
-        } else {
-          productsData.unshift(heroProductItem);
         }
       }
       renderProducts(currentFilter);
@@ -3338,10 +3328,77 @@
     }
 
     /**
+     * Unified Catalog Synchronization (Admin Products vs Dummy Fallbacks)
+     */
+    function syncCatalogList(adminProducts) {
+      if (!Array.isArray(adminProducts)) adminProducts = [];
+
+      const activeAdminProducts = adminProducts.filter(p => {
+        const status = (p.Status || p.status || "Active").toString().toLowerCase();
+        return status !== "draft" && status !== "hidden";
+      });
+
+      const showDummy = (window.STORE_SHOW_DUMMY_PRODUCTS === true || localStorage.getItem("pl_show_dummy_products") === "true");
+
+      if (activeAdminProducts.length > 0) {
+        const mappedAdmin = activeAdminProducts.map((p, index) => normalizeAdminProduct(p, index));
+
+        if (showDummy) {
+          const adminNames = new Set(mappedAdmin.map(m => m.nameUrdu.trim().toLowerCase()));
+          const adminIds = new Set(mappedAdmin.map(m => m.id.toString()));
+
+          const nonDuplicateDefaults = defaultProducts.filter(d => 
+            !adminNames.has(d.nameUrdu.trim().toLowerCase()) && !adminIds.has(d.id.toString())
+          );
+          productsData = [...mappedAdmin, ...nonDuplicateDefaults];
+        } else {
+          // 100% Original Admin Products ONLY (Dummy Data Turned OFF)
+          productsData = [...mappedAdmin];
+        }
+      } else {
+        // Zero admin products in sheet (e.g. all deleted or none added yet)
+        if (showDummy) {
+          productsData = [...defaultProducts];
+        } else {
+          productsData = [];
+        }
+      }
+
+      renderProducts(currentFilter);
+
+      // If PDP is currently open with a deleted product, close PDP or refresh
+      if (currentPdpProduct) {
+        const refreshed = productsData.find(p => 
+          p.id.toString() === currentPdpProduct.id.toString() ||
+          p.nameUrdu.trim().toLowerCase() === currentPdpProduct.nameUrdu.trim().toLowerCase()
+        );
+        if (refreshed) {
+          renderProductPage(refreshed);
+        } else {
+          closeProductPage();
+        }
+      }
+
+      // If cart has deleted products, purge them
+      if (cart.length > 0) {
+        const validIds = new Set(productsData.map(p => p.id.toString()));
+        const validNames = new Set(productsData.map(p => p.nameUrdu.trim().toLowerCase()));
+        const prevCount = cart.length;
+        cart = cart.filter(item => 
+          validIds.has(item.id.toString()) || validNames.has(item.nameUrdu.trim().toLowerCase())
+        );
+        if (cart.length !== prevCount) {
+          updateCartUI();
+        }
+      }
+    }
+
+    /**
      * Fetch products dynamically from Google Sheets & Admin Portal
      */
     async function fetchProductsFromAdmin() {
       // 1. Sync Store Configuration, Settings & Hero Featured Card
+      let serverHero = null;
       try {
         const cfgRes = await fetch(`${API_URL}?action=storeConfig`, { cache: "no-store" });
         if (cfgRes.ok) {
@@ -3355,9 +3412,10 @@
               } catch (e) {}
             }
             if (cfgData.featuredProduct) {
-              applyHeroFeaturedProduct(cfgData.featuredProduct);
+              serverHero = cfgData.featuredProduct;
+              applyHeroFeaturedProduct(serverHero);
               try {
-                localStorage.setItem("pl_hero_featured", JSON.stringify(cfgData.featuredProduct));
+                localStorage.setItem("pl_hero_featured", JSON.stringify(serverHero));
               } catch (e) {}
             }
           }
@@ -3372,24 +3430,21 @@
       // 2. Sync Products Catalog (Local Cache + Google Sheets)
       try {
         let adminProducts = [];
-        // First check local storage for instant multi-tab sync
-        try {
-          const cachedProds = localStorage.getItem("pl_custom_products");
-          if (cachedProds) {
+        const cachedProds = localStorage.getItem("pl_custom_products");
+        if (cachedProds !== null) {
+          try {
             const parsedLocal = JSON.parse(cachedProds);
-            if (Array.isArray(parsedLocal) && parsedLocal.length > 0) {
-              adminProducts = parsedLocal;
-            }
-          }
-        } catch (e) {}
+            if (Array.isArray(parsedLocal)) adminProducts = parsedLocal;
+          } catch (e) {}
+        }
 
-        // Then fetch latest from Google Sheets API
+        // Fetch latest from Google Sheets API
         try {
           const response = await fetch(`${API_URL}?action=productsList`, { cache: "no-store" });
           if (response.ok) {
             const result = await response.json();
             const fetched = (result && result.success !== undefined) ? (result.data || []) : (result || []);
-            if (Array.isArray(fetched) && fetched.length > 0) {
+            if (Array.isArray(fetched)) {
               adminProducts = fetched;
               try {
                 localStorage.setItem("pl_custom_products", JSON.stringify(fetched));
@@ -3400,42 +3455,20 @@
           console.warn("Products API fetch error, fallback to local:", fetchErr);
         }
 
-        if (Array.isArray(adminProducts) && adminProducts.length > 0) {
-          const activeAdminProducts = adminProducts.filter(p => {
-            const status = (p.Status || p.status || "Active").toString().toLowerCase();
-            return status !== "draft" && status !== "hidden";
+        syncCatalogList(adminProducts);
+
+        // Check if hero product was deleted from the catalog:
+        if (adminProducts.length > 0 && serverHero) {
+          const heroId = String(serverHero.productId || "");
+          const heroTitle = String(serverHero.title || "").trim().toLowerCase();
+          const isHeroAlive = adminProducts.some(p => {
+            const pId = String(p.id || p.Id || "");
+            const pName = String(p.name || p.Name || "").trim().toLowerCase();
+            return (heroId && pId === heroId) || (heroTitle && pName === heroTitle);
           });
-
-          if (activeAdminProducts.length > 0) {
-            const mappedAdmin = activeAdminProducts.map((p, index) => normalizeAdminProduct(p, index));
-
-            const showDummy = (window.STORE_SHOW_DUMMY_PRODUCTS === true || localStorage.getItem("pl_show_dummy_products") === "true");
-
-            if (showDummy) {
-              const adminNames = new Set(mappedAdmin.map(m => m.nameUrdu.trim().toLowerCase()));
-              const adminIds = new Set(mappedAdmin.map(m => m.id.toString()));
-
-              const nonDuplicateDefaults = defaultProducts.filter(d => 
-                !adminNames.has(d.nameUrdu.trim().toLowerCase()) && !adminIds.has(d.id.toString())
-              );
-              productsData = [...mappedAdmin, ...nonDuplicateDefaults];
-            } else {
-              // 100% Original Admin Products ONLY (Dummy Data Turned OFF)
-              productsData = [...mappedAdmin];
-            }
-
-            renderProducts(currentFilter);
-
-            // If PDP is currently open, refresh PDP data in place
-            if (currentPdpProduct) {
-              const refreshed = productsData.find(p => 
-                p.id.toString() === currentPdpProduct.id.toString() ||
-                p.nameUrdu.trim().toLowerCase() === currentPdpProduct.nameUrdu.trim().toLowerCase()
-              );
-              if (refreshed) {
-                renderProductPage(refreshed);
-              }
-            }
+          if (!isHeroAlive) {
+            // Hero was deleted from admin! Auto-realign hero with the first active product
+            applyHeroFeaturedProduct(normalizeAdminProduct(adminProducts[0]));
           }
         }
       } catch (err) {

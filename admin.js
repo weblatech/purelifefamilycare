@@ -3196,17 +3196,60 @@ async function saveProduct() {
 
 async function deleteProduct(id) {
   if (!id) return;
-  if (!confirm("Are you sure you want to delete this product?")) return;
+  if (!confirm("کیا آپ واقعی اس پراڈکٹ کو ڈیلیٹ کرنا چاہتے ہیں؟")) return;
 
   try {
-    allProducts = allProducts.filter(p => (p.id || p.Id || p.name || "").toString() !== id.toString());
+    const prodToDelete = allProducts.find(p => 
+      (p.id !== undefined && String(p.id) === String(id)) || 
+      (p.Id !== undefined && String(p.Id) === String(id)) ||
+      (p.name !== undefined && String(p.name) === String(id)) ||
+      (p.Name !== undefined && String(p.Name) === String(id))
+    ) || {};
+    const delId = prodToDelete.id || prodToDelete.Id || id;
+    const delName = (prodToDelete.name || prodToDelete.Name || "").trim();
+
+    // 1. Remove from local list immediately
+    allProducts = allProducts.filter(p => {
+      const pId = String(p.id || p.Id || "");
+      const pName = String(p.name || p.Name || "").trim().toLowerCase();
+      if (delId && pId === String(delId)) return false;
+      if (delName && pName === delName.toLowerCase()) return false;
+      return true;
+    });
+
+    // 2. Persist to localStorage immediately
     try {
       localStorage.setItem("pl_custom_products", JSON.stringify(allProducts));
+      localStorage.setItem("pl_product_deleted_timestamp", Date.now().toString());
     } catch (e) {}
     renderProductsTable(allProducts);
 
-    await apiPost({ action: "deleteProduct", id: id });
-    showToast("پراڈکٹ ڈیلیٹ کر دی گئی", true);
+    // 3. If the deleted product was the active Hero product, reset Hero!
+    const heroId = String(activeHeroFeatured?.productId || "");
+    const heroTitle = String(activeHeroFeatured?.title || "").trim().toLowerCase();
+    const isHeroDeleted = (delId && heroId === String(delId)) || 
+                          (delName && heroTitle === delName.toLowerCase());
+
+    if (isHeroDeleted) {
+      if (allProducts.length > 0) {
+        await quickSetHeroProduct(0);
+      } else {
+        activeHeroFeatured = { ...DEFAULT_HERO_FEATURED };
+        try {
+          localStorage.setItem("pl_hero_featured", JSON.stringify(activeHeroFeatured));
+        } catch (_) {}
+        await saveHeroDataDirectly(activeHeroFeatured);
+      }
+    }
+
+    // 4. Send delete to backend Google Sheets
+    await apiPost({ 
+      action: "deleteProduct", 
+      id: delId, 
+      name: delName 
+    });
+
+    showToast("پراڈکٹ کامیابی سے ڈیلیٹ کر دی گئی", true);
     await loadProducts();
   } catch (err) {
     showToast(err.message || "Failed to delete product", false);
