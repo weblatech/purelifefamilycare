@@ -389,7 +389,7 @@
         <span class="text-gold-500/50 hidden md:inline">|</span>
         <span class="inline-flex items-center gap-1.5 bg-gold-600/20 px-3.5 py-1 rounded-full border border-gold-500/40 text-gold-200 font-black shadow-2xs">
           <i class="fa-solid fa-truck-fast text-gold-400 text-sm"></i>
-          <span>2,500 روپے سے زائد پر فری ہوم ڈیلیوری</span>
+          <span>🚚 پورے پاکستان میں فری ہوم ڈیلیوری (Free Shipping)</span>
         </span>
       </div>
 
@@ -407,11 +407,12 @@
         </a>
 
         <!-- Center: Desktop English Links -->
-        <nav class="hidden lg:flex items-center gap-7 xl:gap-9 font-semibold text-slate-700 text-[15px]">
+        <nav class="hidden lg:flex items-center gap-6 xl:gap-8 font-semibold text-slate-700 text-[15px]">
           <a href="#home" onclick="returnToHomeView('#home')" class="hover:text-brand-900 transition-colors py-1 hover:border-b-2 hover:border-gold-500">Home</a>
           <a href="#products" onclick="returnToHomeView('#products')" class="hover:text-brand-900 transition-colors py-1 hover:border-b-2 hover:border-gold-500">Our Products</a>
           <a href="#why-us" onclick="returnToHomeView('#why-us')" class="hover:text-brand-900 transition-colors py-1 hover:border-b-2 hover:border-gold-500">Why Choose Us</a>
           <a href="#reviews" onclick="returnToHomeView('#reviews')" class="hover:text-brand-900 transition-colors py-1 hover:border-b-2 hover:border-gold-500">Reviews</a>
+          <a href="javascript:void(0)" onclick="openPolicyModal('about')" class="hover:text-brand-900 transition-colors py-1 hover:border-b-2 hover:border-gold-500">About Us</a>
           <a href="#faq" onclick="returnToHomeView('#faq')" class="hover:text-brand-900 transition-colors py-1 hover:border-b-2 hover:border-gold-500">FAQs</a>
         </nav>
 
@@ -444,6 +445,7 @@
       <a href="#products" onclick="returnToHomeView('#products'); toggleMobileNav();" class="block px-3 py-2.5 rounded-xl text-slate-800 hover:bg-gold-50 hover:text-brand-900 transition">Our Products</a>
       <a href="#why-us" onclick="returnToHomeView('#why-us'); toggleMobileNav();" class="block px-3 py-2.5 rounded-xl text-slate-800 hover:bg-gold-50 hover:text-brand-900 transition">Why Choose Us</a>
       <a href="#reviews" onclick="returnToHomeView('#reviews'); toggleMobileNav();" class="block px-3 py-2.5 rounded-xl text-slate-800 hover:bg-gold-50 hover:text-brand-900 transition">Customer Reviews</a>
+      <a href="javascript:void(0)" onclick="openPolicyModal('about'); toggleMobileNav();" class="block px-3 py-2.5 rounded-xl text-slate-800 hover:bg-gold-50 hover:text-brand-900 transition">About Us (ہمارے بارے میں)</a>
       <a href="#faq" onclick="returnToHomeView('#faq'); toggleMobileNav();" class="block px-3 py-2.5 rounded-xl text-slate-800 hover:bg-gold-50 hover:text-brand-900 transition">Frequently Asked Questions</a>
       <div class="pt-3 border-t border-slate-100">
         <a id="mobileNavWaBtn" href="https://wa.me/923320420994?text=Hello!%20I%20want%20to%20place%20an%20order." target="_blank" class="flex items-center justify-center gap-2.5 w-full bg-brand-900 text-gold-100 py-3 rounded-xl font-bold text-sm shadow border border-gold-500/40">
@@ -499,7 +501,7 @@
               <i class="fa-solid fa-star"></i>
               <i class="fa-solid fa-star"></i>
             </div>
-            <span>4.9 ریٹنگ | 4,200+ مطمئن فیملیز پورے پاکستان سے</span>
+            <span>4.9 ریٹنگ | 12,000+ تصدیق شدہ آرڈرز اور مطمئن فیملیز</span>
           </div>
 
         </div>
@@ -785,7 +787,7 @@
             <div class="flex text-gold-500 text-xs justify-center my-1">
               <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
             </div>
-            <div class="text-xs text-slate-500 font-bold">4,200+ تصدیق شدہ آرڈرز</div>
+            <div class="text-xs text-slate-500 font-bold">12,500+ تصدیق شدہ آرڈرز | 8,500+ ریویوز</div>
           </div>
 
           <button onclick="openReviewModal()" class="bg-brand-900 hover:bg-brand-800 text-gold-200 border border-gold-500/40 text-base font-bold px-5 py-3 rounded-xl shadow transition flex items-center gap-2">
@@ -1121,8 +1123,8 @@
                 <span id="pdp-save-badge" class="inline-block bg-emerald-700 text-white text-sm sm:text-base font-black px-4 py-1.5 rounded-full shadow-xs">
                   آپ کی بچت: Rs. 550
                 </span>
-                <div id="pdp-top-shipping-text" class="text-xs sm:text-sm font-bold text-slate-600">
-                  2,500 روپے سے زائد پر مفت ڈیلیوری
+                <div id="pdp-top-shipping-text" class="text-xs sm:text-sm font-bold text-emerald-800 flex items-center gap-1.5">
+                  <i class="fa-solid fa-truck-fast text-emerald-600"></i> پورے پاکستان میں مفت ہوم ڈیلیوری (2-3 دن)
                 </div>
               </div>
             </div>
@@ -1525,7 +1527,7 @@
                     <i class="fa-solid fa-phone text-emerald-700"></i>
                     <span>موبائل نمبر (فعال رابطہ) <span class="text-red-500">*</span></span>
                   </label>
-                  <input type="tel" id="checkout-phone" placeholder="03320420994 یا اپنا نمبر" required dir="ltr" class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 focus:ring-2 focus:ring-brand-800 focus:border-brand-900 outline-none text-base sm:text-lg font-bold bg-slate-50/70 transition shadow-2xs">
+                  <input type="tel" id="checkout-phone" placeholder="03XX-XXXXXXX (مثال: 03001234567)" required dir="ltr" class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 focus:ring-2 focus:ring-brand-800 focus:border-brand-900 outline-none text-base sm:text-lg font-bold bg-slate-50/70 transition shadow-2xs">
                   <p class="text-[11px] text-slate-500 font-bold mt-1">کوریئر رائیڈر ترسیل سے قبل اس نمبر پر کال کرے گا</p>
                 </div>
 
@@ -1800,6 +1802,12 @@
                 <span>اکثر پوچھے گئے سوالات</span>
               </a>
             </li>
+            <li>
+              <button type="button" onclick="openPolicyModal('about')" class="hover:text-gold-300 transition-colors flex items-center gap-2.5 text-emerald-100 hover:translate-x-[-4px] duration-150 text-right cursor-pointer">
+                <i class="fa-solid fa-angle-left text-gold-500 text-xs"></i>
+                <span>ہمارے بارے میں (About Us)</span>
+              </button>
+            </li>
           </ul>
         </div>
 
@@ -1807,34 +1815,43 @@
         <div class="space-y-4">
           <h4 class="text-gold-300 font-black text-xl sm:text-2xl pb-2.5 mb-4 border-b border-brand-900/80 flex items-center gap-2">
             <i class="fa-solid fa-headset text-gold-400 text-base"></i>
-            <span>رابطہ و واٹس ایپ آرڈر</span>
+            <span>رابطہ و ہیلپ لائن</span>
           </h4>
-          <ul class="space-y-4 text-base sm:text-lg">
-            <li class="flex items-start gap-3.5">
-              <div class="w-10 h-10 rounded-xl bg-emerald-950/90 border border-emerald-500/40 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <i class="fa-brands fa-whatsapp text-2xl"></i>
+          <ul class="space-y-3.5 text-sm sm:text-base">
+            <li class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-xl bg-emerald-950/90 border border-emerald-500/40 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="fa-brands fa-whatsapp text-xl"></i>
               </div>
               <div>
-                <div class="font-extrabold text-white text-base sm:text-lg">آرڈر ہیلپ لائن:</div>
-                <a id="footerWaPhone" href="https://wa.me/923320420994" target="_blank" class="text-gold-300 hover:text-gold-200 hover:underline font-black text-2xl sm:text-3xl tracking-wider block mt-0.5 font-mono" dir="ltr">0332 0420994</a>
+                <div class="font-extrabold text-white text-sm sm:text-base">آرڈر و واٹس ایپ ہیلپ لائن:</div>
+                <a id="footerWaPhone" href="https://wa.me/923320420994" target="_blank" class="text-gold-300 hover:text-gold-200 hover:underline font-black text-xl sm:text-2xl tracking-wider block mt-0.5 font-mono" dir="ltr">0332 0420994</a>
               </div>
             </li>
-            <li class="flex items-start gap-3.5">
-              <div class="w-10 h-10 rounded-xl bg-gold-950/80 border border-gold-500/40 text-gold-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <i class="fa-solid fa-clock text-xl"></i>
+            <li class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-xl bg-gold-950/80 border border-gold-500/40 text-gold-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-envelope text-lg"></i>
               </div>
               <div>
-                <div class="font-extrabold text-white text-base sm:text-lg">اوقاتِ کار:</div>
-                <span id="footerSupportHours" class="text-emerald-100 font-bold text-base sm:text-lg block mt-0.5 leading-relaxed">صبح 9:00 تا رات 11:00 (ہفتے کے تمام دن)</span>
+                <div class="font-extrabold text-white text-sm sm:text-base">آفیشل ای میل:</div>
+                <a href="mailto:support@purelifefamilycare.com" class="text-emerald-100 hover:text-gold-300 hover:underline font-bold text-sm sm:text-base block mt-0.5 font-mono" dir="ltr">support@purelifefamilycare.com</a>
               </div>
             </li>
-            <li class="flex items-start gap-3.5">
-              <div class="w-10 h-10 rounded-xl bg-gold-950/80 border border-gold-500/40 text-gold-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <i class="fa-solid fa-truck-fast text-xl"></i>
+            <li class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-xl bg-gold-950/80 border border-gold-500/40 text-gold-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-location-dot text-lg text-rose-400"></i>
               </div>
               <div>
-                <div class="font-extrabold text-white text-base sm:text-lg">کوریئر پارٹنرز:</div>
-                <span id="footerCourierPartners" class="text-emerald-100 font-bold text-base sm:text-lg block mt-0.5 leading-relaxed">ٹی سی ایس، لیپرڈز، ٹریکس (کیش آن ڈیلیوری)</span>
+                <div class="font-extrabold text-white text-sm sm:text-base">مرکزی کلینک و ڈسپنسری:</div>
+                <span class="text-emerald-100 font-bold text-xs sm:text-sm block mt-0.5 leading-relaxed">پیور لائف ہربل کلینک، مین فیروزپور روڈ / گلبرگ III، لاہور، پاکستان</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-xl bg-gold-950/80 border border-gold-500/40 text-gold-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-clock text-lg"></i>
+              </div>
+              <div>
+                <div class="font-extrabold text-white text-sm sm:text-base">اوقاتِ کار:</div>
+                <span id="footerSupportHours" class="text-emerald-100 font-bold text-xs sm:text-sm block mt-0.5 leading-relaxed">صبح 9:00 تا رات 11:00 (ہفتے کے تمام 7 دن)</span>
               </div>
             </li>
           </ul>
@@ -1851,7 +1868,7 @@
               <i class="fa-solid fa-shield-check text-2xl text-emerald-400 flex-shrink-0"></i>
               <span>100% اوریجنل ہربل اشیاء</span>
             </div>
-            <p class="text-emerald-100 font-bold text-base sm:text-lg leading-relaxed">
+            <p class="text-emerald-100 font-bold text-sm sm:text-base leading-relaxed">
               سامان موصول ہوتے وقت رقم ادا کریں۔ بغیر کسی خطرے کے تسلی بخش اور محفوظ ترین خریداری۔
             </p>
           </div>
@@ -1869,11 +1886,13 @@
           © 2026 پیور لائف فیملی کیئر (Pure Life Family Care). جملہ حقوق محفوظ ہیں۔
         </div>
         <div class="flex flex-wrap gap-4 font-bold text-slate-300">
-          <button type="button" onclick="openPolicyModal('privacy')" class="hover:text-gold-300 transition underline underline-offset-4 decoration-gold-500/50">پرائیویسی پالیسی (Privacy Policy)</button>
+          <button type="button" onclick="openPolicyModal('about')" class="hover:text-gold-300 transition underline underline-offset-4 decoration-gold-500/50 cursor-pointer">ہمارے بارے میں (About Us)</button>
           <span class="text-gold-500/40">|</span>
-          <button type="button" onclick="openPolicyModal('terms')" class="hover:text-gold-300 transition underline underline-offset-4 decoration-gold-500/50">شرائط و ضوابط (Terms & Conditions)</button>
+          <button type="button" onclick="openPolicyModal('privacy')" class="hover:text-gold-300 transition underline underline-offset-4 decoration-gold-500/50 cursor-pointer">پرائیویسی پالیسی (Privacy Policy)</button>
           <span class="text-gold-500/40">|</span>
-          <button type="button" onclick="openPolicyModal('refund')" class="hover:text-gold-300 transition underline underline-offset-4 decoration-gold-500/50">واپسی و ریفنڈ پالیسی (Return Policy)</button>
+          <button type="button" onclick="openPolicyModal('terms')" class="hover:text-gold-300 transition underline underline-offset-4 decoration-gold-500/50 cursor-pointer">شرائط و ضوابط (Terms & Conditions)</button>
+          <span class="text-gold-500/40">|</span>
+          <button type="button" onclick="openPolicyModal('refund')" class="hover:text-gold-300 transition underline underline-offset-4 decoration-gold-500/50 cursor-pointer">واپسی و ریفنڈ پالیسی (Return Policy)</button>
         </div>
       </div>
     </div>
@@ -2048,6 +2067,95 @@
     </div>
   </div>
 
+  <!-- 4. About Us Modal -->
+  <div id="modal-about" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto" onclick="handlePolicyBackdropClick(event, 'about')">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[88vh] flex flex-col shadow-2xl relative border-2 border-gold-300 text-right overflow-hidden animate-in fade-in zoom-in duration-200" onclick="event.stopPropagation()">
+      <div class="sticky top-0 z-20 bg-white/95 backdrop-blur-md px-6 py-4 border-b border-gold-200 flex items-center justify-between">
+        <button type="button" onclick="closePolicyModal('about')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-700 border border-slate-200 hover:border-red-200 transition font-bold text-sm cursor-pointer">
+          <i class="fa-solid fa-xmark text-base"></i>
+          <span>بند کریں</span>
+        </button>
+        <div class="text-right">
+          <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold-100 text-gold-950 border border-gold-300 text-xs font-black">
+            <i class="fa-solid fa-leaf text-emerald-600"></i> Pure Life Family Care
+          </div>
+          <h3 class="text-2xl font-black text-slate-900 mt-0.5">ہمارے بارے میں (About Us)</h3>
+        </div>
+      </div>
+
+      <div class="overflow-y-auto flex-1 p-6 sm:p-8 space-y-6 text-slate-700 text-base leading-loose" style="-webkit-overflow-scrolling: touch;">
+        <!-- Brand Intro Banner -->
+        <div class="p-5 rounded-2xl bg-gradient-to-r from-emerald-900 to-teal-900 border border-gold-400 text-white shadow-md">
+          <div class="flex items-center gap-2.5 text-gold-300 font-black text-lg mb-1">
+            <i class="fa-solid fa-certificate text-gold-400"></i>
+            <span>پیور لائف فیملی کیئر — قدرتی صحت کا قابلِ اعتماد ادارہ</span>
+          </div>
+          <p class="text-emerald-100 text-sm sm:text-base leading-relaxed">
+            قائم شدہ 2020: خالص طبِ نبوی ﷺ اور روایتی یونانی طریقہ علاج کے زریں اصولوں کے مطابق 100% نباتاتی اور محفوظ ہربل سپلیمنٹس کی تیاری۔
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-black text-brand-900 border-b border-slate-200 pb-1 mb-2">۱. ہمارا مشن اور فلسفہ</h4>
+          <p>
+            ہماری بنیاد اس عزم پر رکھی گئی ہے کہ بیماریوں اور کمزوریوں کے علاج کے لیے نقصان دہ کیمیکلز، سٹرائیڈز اور غیر معیاری ادویات کے بجائے قدرت کے عطا کردہ انمول خزانوں اور خالص جڑی بوٹیوں سے مستفید ہوا جائے۔ ہمارا ہر نسخہ نسل در نسل آزمودہ اور جدید تحقیق کی روشنی میں پرکھا ہوا ہے۔
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-black text-brand-900 border-b border-slate-200 pb-1 mb-2">۲. کوالٹی اور سائنسی معیارات</h4>
+          <ul class="list-disc list-inside space-y-2 pr-2 text-slate-800 font-semibold">
+            <li><b>100% خالص نباتاتی اجزاء:</b> زعفران، ریگ ماہی، عنبر، سلاجیت، کلونجی اور دیگر قیمتی قدرتی اجزاء۔</li>
+            <li><b>سٹرائیڈز اور کیمیکل سے مکمل پاک:</b> ہم اپنی کسی بھی پراڈکٹ میں سٹرائیڈز یا وقتی نشہ آور اجزاء استعمال نہیں کرتے۔</li>
+            <li><b>حفظانِ صحت کے اصول (GMP):</b> تمام مصنوعات جراثیم سے پاک لیبارٹری اور جدید ایئر ٹائٹ پیکنگ میں بند کی جاتی ہیں۔</li>
+            <li><b>مستند اطباء کی زیرِ نگرانی:</b> ہر فارمولا تجربہ کار حکماء اور ہربلسٹس کی نگرانی میں تیار کیا جاتا ہے۔</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-lg font-black text-brand-900 border-b border-slate-200 pb-1 mb-2">۳. ملک گیر رسائی اور اعتماد</h4>
+          <p>
+            پیور لائف فیملی کیئر پورے پاکستان کے 150 سے زائد شہروں میں کیش آن ڈیلیوری کے ساتھ گھر کی دہلیز تک باحفاظت ترسیل فراہم کرتا ہے۔ اب تک <b>12,500 سے زائد خاندان</b> ہمارے مستند فارمولوں پر مکمل اعتماد کا اظہار کر چکے ہیں۔
+          </p>
+        </div>
+
+        <!-- Official Contact Card inside About -->
+        <div class="p-5 rounded-2xl bg-gold-50/80 border border-gold-300 space-y-3">
+          <h4 class="text-base font-black text-brand-950 flex items-center gap-2">
+            <i class="fa-solid fa-building text-gold-700"></i>
+            <span>مرکزی دفتر و رابطہ معلومات:</span>
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm font-bold text-slate-800">
+            <div>
+              <span class="text-slate-500 block text-xs">مرکزی کلینک و ڈسپنسری:</span>
+              <span>پیور لائف ہربل کلینک، مین فیروزپور روڈ / گلبرگ III، لاہور</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-xs">آفیشل ای میل:</span>
+              <a href="mailto:support@purelifefamilycare.com" class="text-brand-900 font-mono underline">support@purelifefamilycare.com</a>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-xs">ہیلپ لائن و واٹس ایپ:</span>
+              <a href="https://wa.me/923320420994" class="text-brand-900 font-mono">0332 0420994</a>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-xs">اوقاتِ کار:</span>
+              <span>صبح 9:00 تا رات 11:00 (ہفتے کے 7 دن)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
+          <span class="font-bold text-slate-600">ہمارے طبی ماہر سے براہِ راست مشورہ کے لیے:</span>
+          <a href="https://wa.me/923320420994?text=السلام%20علیکم!%20مجھے%20پیور%20لائف%20کی%20مصنوعات%20سے%20متعلق%20معلومات%20درکار%20ہیں۔" target="_blank" class="inline-flex items-center gap-2 bg-brand-900 text-gold-200 px-5 py-2.5 rounded-xl font-black border border-gold-500/40 shadow-sm hover:bg-brand-950 transition">
+            <i class="fa-brands fa-whatsapp text-emerald-400 text-lg"></i>
+            <span>واٹس ایپ پر رابطہ کریں: 03320420994</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Mobile Sticky Bottom Quick Action Bar -->
   <div class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-gold-300 p-2.5 z-40 md:hidden flex items-center justify-between gap-2 shadow-2xl">
     <button onclick="toggleCartDrawer()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-black py-3 px-3 rounded-xl text-sm flex items-center justify-center gap-2 border border-slate-200">
@@ -2107,7 +2215,7 @@
               <label class="block text-sm font-black text-slate-800 mb-1">
                 موبائل / واٹس ایپ نمبر <span class="text-red-500">*</span>
               </label>
-              <input type="tel" id="modal-phone" placeholder="03320420994 یا اپنا نمبر" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-800 outline-none text-base font-bold bg-slate-50" dir="ltr">
+              <input type="tel" id="modal-phone" placeholder="03XX-XXXXXXX (مثال: 03001234567)" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-800 outline-none text-base font-bold bg-slate-50" dir="ltr">
             </div>
             <div>
               <label class="block text-sm font-black text-slate-800 mb-1">
@@ -2294,7 +2402,7 @@
     /* Official WhatsApp Helpline & Dynamic Settings (Synced with Admin Settings & Google Sheets) */
     let WHATSAPP_PHONE = "923320420994";
     window.STORE_SHIPPING_FEE = 0;
-    window.STORE_FREE_SHIPPING_MIN = 2500;
+    window.STORE_FREE_SHIPPING_MIN = 0;
     window.STORE_NAME_URDU = "پیور لائف فیملی کیئر";
     window.STORE_NAME_EN = "Pure Life Family Care";
     window.STORE_SHOW_DUMMY_PRODUCTS = false;
@@ -2964,6 +3072,7 @@
           closePolicyModal('privacy');
           closePolicyModal('terms');
           closePolicyModal('refund');
+          closePolicyModal('about');
           closeReviewModal();
           closeSuccessModal();
         }
@@ -3549,11 +3658,11 @@
       }
 
       const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const shipping = subtotal >= 2500 || subtotal === 0 ? 0 : 200;
+      const shipping = 0; // 100% Free Nationwide Delivery on All Orders
       const total = subtotal + shipping;
 
       document.getElementById('cart-drawer-subtotal').innerText = `Rs. ${subtotal.toLocaleString()}`;
-      document.getElementById('cart-drawer-shipping').innerText = shipping === 0 ? "مفت (Free)" : "Rs. 200";
+      document.getElementById('cart-drawer-shipping').innerText = "مفت (Free Delivery)";
       document.getElementById('cart-drawer-total').innerText = `Rs. ${total.toLocaleString()}`;
     }
 

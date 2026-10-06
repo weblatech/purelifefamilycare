@@ -3787,7 +3787,7 @@ function populateSettingsForm(s) {
   setVal("settingSenderPhone", s.senderPhone || "0335-6352625");
   setVal("settingSenderAddress", s.senderAddress || "Post Office Depalpur District Okara (56180)");
   setVal("settingShippingFee", s.shippingFee !== undefined ? s.shippingFee : 0);
-  setVal("settingFreeShippingMin", s.freeShippingMin !== undefined ? s.freeShippingMin : 2500);
+  setVal("settingFreeShippingMin", s.freeShippingMin !== undefined ? s.freeShippingMin : 0);
   setVal("settingDefaultCourier", s.defaultCourier || "COD");
   setVal("settingCourierPartners", s.courierPartners || "ٹی سی ایس، لیپرڈز، ٹریکس (کیش آن ڈیلیوری)");
   setVal("settingAnnouncementText", s.announcementText || "🌿 پیور لائف فیملی کیئر | 100% خالص اور اصلی ہربل مصنوعات");
@@ -3941,7 +3941,7 @@ async function saveStoreSettings() {
     senderPhone: document.getElementById("settingSenderPhone")?.value.trim() || "0335-6352625",
     senderAddress: document.getElementById("settingSenderAddress")?.value.trim() || "Post Office Depalpur District Okara (56180)",
     shippingFee: parseInt(document.getElementById("settingShippingFee")?.value, 10) || 0,
-    freeShippingMin: parseInt(document.getElementById("settingFreeShippingMin")?.value, 10) || 2500,
+    freeShippingMin: parseInt(document.getElementById("settingFreeShippingMin")?.value, 10) || 0,
     defaultCourier: document.getElementById("settingDefaultCourier")?.value || "COD",
     courierPartners: document.getElementById("settingCourierPartners")?.value.trim() || "ٹی سی ایس، لیپرڈز، ٹریکس (کیش آن ڈیلیوری)",
     announcementEnabled: !!document.getElementById("settingAnnouncementEnabled")?.checked,
