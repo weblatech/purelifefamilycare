@@ -1815,7 +1815,7 @@
             <li>
               <a href="#products" class="hover:text-gold-300 transition-colors flex items-center gap-2.5 text-emerald-100 hover:translate-x-[-4px] duration-150">
                 <i class="fa-solid fa-angle-left text-gold-500 text-xs"></i>
-                <span>9 خاص ہربل پراڈکٹس</span>
+                <span id="footer-products-count-badge"><span id="footer-products-count">3</span> خاص ہربل پراڈکٹس</span>
               </a>
             </li>
             <li>
@@ -2983,7 +2983,30 @@
       }
     ];
 
-    let productsData = [...defaultProducts];
+    // Start with empty catalog on fresh browsers to prevent flashing old dummy products
+    let productsData = [];
+    window.catalogIsLoading = true;
+
+    // Immediately check if products are cached in localStorage (0ms load on returning visits)
+    try {
+      const cachedProds = localStorage.getItem("pl_custom_products");
+      if (cachedProds !== null) {
+        const parsedLocal = JSON.parse(cachedProds);
+        if (Array.isArray(parsedLocal) && parsedLocal.length > 0) {
+          productsData = parsedLocal.map((p, idx) => normalizeAdminProduct(p, idx));
+          window.catalogIsLoading = false;
+        }
+      }
+    } catch (e) {
+      console.warn("Product cache bootstrap error:", e);
+    }
+
+    // Only if showDummyProducts is explicitly ON in localStorage, and no cache exists, use defaultProducts
+    if (productsData.length === 0 && localStorage.getItem("pl_show_dummy_products") === "true") {
+      productsData = [...defaultProducts];
+      window.catalogIsLoading = false;
+    }
+
     let cart = [];
     let currentFilter = 'all';
     let checkoutMode = 'single';
@@ -3044,8 +3067,7 @@
         const cachedHeroRaw = localStorage.getItem("pl_hero_featured");
         if (cachedHeroRaw) {
           const parsedHero = JSON.parse(cachedHeroRaw);
-          const t = String(parsedHero.title || "").toLowerCase();
-          if (t.includes("ریڈبل") || t.includes("redbull")) {
+          if (parsedHero.productId === "P-1791188409746") {
             localStorage.removeItem("pl_hero_featured");
           } else {
             applyHeroFeaturedProduct(parsedHero);
@@ -3055,6 +3077,7 @@
         console.warn("Hero cache load error:", e);
       }
 
+      updateDynamicProductCounts();
       renderProducts('all');
       fetchProductsFromAdmin();
       // Periodically sync for newly added admin products & hero changes every 15 seconds
@@ -3125,6 +3148,64 @@
     function renderProducts(category = 'all') {
       const container = document.getElementById('product-grid');
       if (!container) return;
+
+      // If catalog is loading on a fresh browser without cache, show 3 elegant skeleton cards
+      if (window.catalogIsLoading && productsData.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-3xl overflow-hidden border border-gold-200/70 shadow-sm animate-pulse flex flex-col justify-between">
+            <div class="h-64 sm:h-72 bg-gradient-to-b from-amber-50 to-slate-100 flex items-center justify-center">
+              <i class="fa-solid fa-spinner fa-spin text-3xl text-gold-500"></i>
+            </div>
+            <div class="p-6 sm:p-7 space-y-4">
+              <div class="h-7 bg-slate-200 rounded-xl w-3/4"></div>
+              <div class="h-4 bg-slate-100 rounded-lg w-1/2"></div>
+              <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+                <div class="h-8 bg-slate-200 rounded-lg w-28"></div>
+                <div class="h-6 bg-slate-100 rounded-lg w-20"></div>
+              </div>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <div class="h-10 bg-slate-200 rounded-xl"></div>
+                <div class="h-10 bg-slate-200 rounded-xl"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-3xl overflow-hidden border border-gold-200/70 shadow-sm animate-pulse flex flex-col justify-between">
+            <div class="h-64 sm:h-72 bg-gradient-to-b from-amber-50 to-slate-100 flex items-center justify-center">
+              <i class="fa-solid fa-spinner fa-spin text-3xl text-gold-500"></i>
+            </div>
+            <div class="p-6 sm:p-7 space-y-4">
+              <div class="h-7 bg-slate-200 rounded-xl w-3/4"></div>
+              <div class="h-4 bg-slate-100 rounded-lg w-1/2"></div>
+              <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+                <div class="h-8 bg-slate-200 rounded-lg w-28"></div>
+                <div class="h-6 bg-slate-100 rounded-lg w-20"></div>
+              </div>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <div class="h-10 bg-slate-200 rounded-xl"></div>
+                <div class="h-10 bg-slate-200 rounded-xl"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-3xl overflow-hidden border border-gold-200/70 shadow-sm animate-pulse flex flex-col justify-between">
+            <div class="h-64 sm:h-72 bg-gradient-to-b from-amber-50 to-slate-100 flex items-center justify-center">
+              <i class="fa-solid fa-spinner fa-spin text-3xl text-gold-500"></i>
+            </div>
+            <div class="p-6 sm:p-7 space-y-4">
+              <div class="h-7 bg-slate-200 rounded-xl w-3/4"></div>
+              <div class="h-4 bg-slate-100 rounded-lg w-1/2"></div>
+              <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+                <div class="h-8 bg-slate-200 rounded-lg w-28"></div>
+                <div class="h-6 bg-slate-100 rounded-lg w-20"></div>
+              </div>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <div class="h-10 bg-slate-200 rounded-xl"></div>
+                <div class="h-10 bg-slate-200 rounded-xl"></div>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
 
       const filtered = category === 'all' 
         ? productsData 
@@ -3506,11 +3587,20 @@
       };
     }
 
+    function updateDynamicProductCounts() {
+      const count = productsData.length;
+      const countEl = document.getElementById('footer-products-count');
+      if (countEl) {
+        countEl.innerText = count > 0 ? count : 3;
+      }
+    }
+
     /**
      * Unified Catalog Synchronization (Admin Products vs Dummy Fallbacks)
      */
     function syncCatalogList(adminProducts) {
       if (!Array.isArray(adminProducts)) adminProducts = [];
+      window.catalogIsLoading = false;
 
       const activeAdminProducts = adminProducts.filter(p => {
         const status = (p.Status || p.status || "Active").toString().toLowerCase();
@@ -3543,6 +3633,7 @@
         }
       }
 
+      updateDynamicProductCounts();
       renderProducts(currentFilter);
 
       // If PDP is currently open with a deleted product, close PDP or refresh
@@ -3636,7 +3727,7 @@
 
         syncCatalogList(adminProducts);
 
-        // Check if hero product was deleted from the catalog or is dead RedBull:
+        // Check if hero product was deleted from the catalog:
         if (adminProducts.length > 0) {
           const currentHero = serverHero || (function() {
             try { return JSON.parse(localStorage.getItem("pl_hero_featured") || "null"); } catch(e) { return null; }
@@ -3646,8 +3737,8 @@
           if (currentHero) {
             const heroId = String(currentHero.productId || "");
             const heroTitle = String(currentHero.title || "").trim().toLowerCase();
-            const isRedBull = heroTitle.includes("ریڈبل") || heroTitle.includes("redbull");
-            if (!isRedBull) {
+            const isGhost = (heroId === "P-1791188409746");
+            if (!isGhost) {
               isHeroAlive = adminProducts.some(p => {
                 const pId = String(p.id || p.Id || "");
                 const pName = String(p.name || p.Name || "").trim().toLowerCase();
@@ -3657,7 +3748,7 @@
           }
 
           if (!isHeroAlive) {
-            // Hero was deleted from admin or was ghost RedBull! Auto-realign hero with the first active product
+            // Hero was deleted from admin! Auto-realign hero with the first active product
             const activeHero = productToHeroConfig(adminProducts[0]);
             applyHeroFeaturedProduct(activeHero);
             try {
