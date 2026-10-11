@@ -2301,18 +2301,6 @@ const BUILTIN_HERBAL_PRODUCTS = [
     awardBadge: "اعصابی بوسٹر"
   },
   {
-    id: "4",
-    name: "ریڈبل ہربل انرجی کیپسول (RedBull Herbal)",
-    price: 2200,
-    comparePrice: 2900,
-    image: "https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=500&auto=format&fit=crop&q=80",
-    description: "فوری طاقت، استقامت اور اعصابی تقویت، خون کی روانی کو تیز اور مردانہ قوت و اسٹیمینا میں حیرت انگیز اضافہ۔",
-    pillBadge: "30 کیپسول",
-    tag1: "طاقت کا طوفان",
-    tag2: "فوری رزلٹ",
-    awardBadge: "مردانہ اسٹیمینا"
-  },
-  {
     id: "7",
     name: "خالص ہمالین سلاجیت و سفید موصلی معجون",
     price: 2800,
@@ -2706,7 +2694,12 @@ async function saveHeroDataDirectly(heroData) {
     } catch (e) {
       console.warn("Existing config fetch:", e);
     }
-    fullConfig.featuredProduct = heroData;
+    // Avoid Google Sheets 50k char single cell limit if image is a massive base64 string
+    const safeHeroToSave = { ...heroData };
+    if (safeHeroToSave.image && safeHeroToSave.image.length > 5000) {
+      safeHeroToSave.image = "";
+    }
+    fullConfig.featuredProduct = safeHeroToSave;
 
     await apiPost({
       action: "saveStoreConfig",

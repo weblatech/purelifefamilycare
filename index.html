@@ -2346,7 +2346,7 @@
             <option>اکسیرِ شباب گولڈ کیپسول</option>
             <option>پیور مورنگا کیپسول</option>
             <option>اشواگندھا ایکسٹرا پاور</option>
-            <option>ریڈبل ہربل انرجی کیپسول</option>
+            <option>پیور لائف کارٹی اسپائن میٹرکس</option>
             <option>پیور لائف نیم فیس واش</option>
             <option>کلونجی و لہسن آئل کیپسول</option>
             <option>خالص سلاجیت و سفید موصلی معجون</option>
@@ -2673,39 +2673,39 @@
       },
       {
         id: "4",
-        nameUrdu: "ریڈبل ہربل انرجی کیپسول",
-        nameEn: "RedBull Herbal Energy Vitalizer",
-        category: "vitality",
-        badge: "طاقت کا طوفان",
-        badgeColor: "bg-brand-800",
-        price: 2200,
-        regularPrice: 2900,
+        nameUrdu: "پیور لائف کارٹی اسپائن میٹرکس",
+        nameEn: "Pure Life CartiSpine Matrix (30 Capsules)",
+        category: "pain-skincare",
+        badge: "جدید فارمولا",
+        badgeColor: "bg-emerald-900",
+        price: 2999,
+        regularPrice: 3499,
         rating: 4.9,
         reviewsCount: 1150,
-        image: "https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=500&auto=format&fit=crop&q=80",
+        image: "akseer-e-shabab.png",
         benefits: [
-          "فوری طاقت، استقامت اور اعصابی تقویت",
-          "خون کی روانی کو تیز اور پٹھوں کو مضبوط بنائے",
-          "مردانہ طاقت اور اسٹیمینا میں حیرت انگیز اضافہ",
-          "کوئی کیمیکل نہیں، 100% محفوظ نباتاتی اجزاء"
+          "مہروں، کارٹلیج اور جوڑوں کے درد سے مستقل نجات",
+          "سائنوویل فلوئڈ اور قدرتی چکنائی کی تیزی سے بحالی",
+          "عرق النساء (Sciatica) اور پٹھوں کے کھچاؤ میں بے مثال سکون",
+          "جدید بائیو کیمک منرلز کا قدرتی ماسٹر بلینڈ"
         ],
         dosage: "روزانہ رات کو سونے سے قبل 1 کیپسول نیم گرم دودھ کے ساتھ استعمال فرمائیں۔",
-        ingredients: "جنسنگ ریڈ روٹ، جنکگو بلوبا، زعفران، مکرادھواج، تریوانگ بھسم، جائفل اور لونگ کا خالص جوہر۔",
-        description: "فوری انرجی اور جسمانی قوت کا طوفان۔ جو حضرات دن بھر کی مشقت کے بعد شدید نڈھال ہو جاتے ہیں، ان کے پٹھوں اور خون کی گردش کو فوری چست و توانا بناتا ہے۔",
-        precautions: "تیز مصالحہ جات اور تمباکو نوشی سے گریز کریں۔",
+        ingredients: "کارٹلیج ری جنریٹرز، جدید بائیو کیمک منرلز اور سوزش کش نباتاتی اجزاء۔",
+        description: "مہروں کے کھچاؤ، ڈسک سلپ، مہروں میں گیپ اور گھٹنوں کی کڑکڑاہٹ و درد کے لیے قدرتی کارٹلیج ری جنریٹر فارمولا۔",
+        precautions: "بھاری وزن اٹھانے سے پرہیز کریں اور نیم گرم پانی کا زیادہ استعمال کریں۔",
         productReviews: [
           {
             name: "کامران اصغر",
             city: "سرگودھا",
             rating: 5,
-            text: "طاقت اور اسٹیمینا کے لیے اس سے بہترین کوئی دوا نہیں دیکھی۔ 15 دن میں فرق صاف ظاہر ہے۔",
+            text: "کمر اور مہروں کے درد کے لیے اس سے بہترین کوئی دوا نہیں دیکھی۔ 15 دن میں فرق صاف ظاہر ہے۔",
             verified: true
           },
           {
             name: "نعمان سلیم",
             city: "حیدرآباد",
             rating: 5,
-            text: "بہت ہی طاقتور اور اثر انگیز فارمولا ہے۔ پٹھوں کا درد اور تھکن غائب ہو گئی ہے۔",
+            text: "بہت ہی طاقتور اور اثر انگیز فارمولا ہے۔ پٹھوں کا درد اور کھچاؤ غائب ہو گیا ہے۔",
             verified: true
           },
           {
@@ -3007,9 +3007,15 @@
 
       // Check local cache for immediate hero card render (zero delay/flicker)
       try {
-        const cachedHero = localStorage.getItem("pl_hero_featured");
-        if (cachedHero) {
-          applyHeroFeaturedProduct(JSON.parse(cachedHero));
+        const cachedHeroRaw = localStorage.getItem("pl_hero_featured");
+        if (cachedHeroRaw) {
+          const parsedHero = JSON.parse(cachedHeroRaw);
+          const t = String(parsedHero.title || "").toLowerCase();
+          if (t.includes("ریڈبل") || t.includes("redbull")) {
+            localStorage.removeItem("pl_hero_featured");
+          } else {
+            applyHeroFeaturedProduct(parsedHero);
+          }
         }
       } catch (e) {
         console.warn("Hero cache load error:", e);
@@ -3106,11 +3112,6 @@
           ? Math.round(((prod.regularPrice - prod.price) / prod.regularPrice) * 100)
           : 20;
 
-        const benefitsList = Array.isArray(prod.benefits) ? prod.benefits : [
-          "100% خالص قدرتی دیسی جڑی بوٹیوں سے تیار کردہ",
-          "مضر کیمیکلز اور سائیڈ ایفیکٹس سے مکمل پاک"
-        ];
-
         return `
           <div class="bg-white rounded-3xl overflow-hidden border border-gold-200/90 hover:border-gold-400 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
             
@@ -3136,7 +3137,7 @@
               </div>
             </div>
 
-            <!-- Body Details -->
+            <!-- Body Details: Only Title, Subtitle, Price, and Action Buttons -->
             <div class="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4 text-right">
               <div>
                 <h3 onclick="viewProductPage('${prod.id}')" class="text-2xl sm:text-3xl font-black text-slate-900 leading-[1.8] sm:leading-[1.9] group-hover:text-brand-900 transition-colors cursor-pointer">
@@ -3145,16 +3146,6 @@
                 <p class="text-xs sm:text-sm text-gold-700 font-bold font-sans mt-0.5" dir="ltr">
                   ${prod.nameEn}
                 </p>
-
-                <!-- Benefits List -->
-                <ul class="space-y-2 mt-4 text-slate-700 text-base sm:text-lg font-medium leading-[2.1]">
-                  ${benefitsList.map(b => `
-                    <li class="flex items-start gap-2.5">
-                      <i class="fa-solid fa-circle-check text-brand-700 text-lg mt-1 flex-shrink-0"></i>
-                      <span>${b}</span>
-                    </li>
-                  `).join('')}
-                </ul>
               </div>
 
               <!-- Pricing & CTAs -->
@@ -3172,20 +3163,20 @@
                   </span>
                 </div>
 
-                <!-- Dedicated Product Page CTA Button -->
-                <button type="button" onclick="viewProductPage('${prod.id}')" class="w-full bg-slate-900 hover:bg-slate-800 text-gold-200 text-sm sm:text-base font-bold py-2.5 rounded-xl shadow-xs transition flex items-center justify-center gap-2 border border-slate-700 cursor-pointer active:scale-98">
-                  <i class="fa-solid fa-circle-info text-gold-400"></i>
-                  <span>مکمل تفصیل، ریویوز و آرڈر دیکھیں</span>
-                </button>
-
-                <div class="grid grid-cols-2 gap-2.5 pt-0.5">
-                  <button type="button" onclick="openDirectOrder('${prod.id}')" class="w-full bg-brand-900 hover:bg-brand-800 text-gold-100 text-sm sm:text-base font-black py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 border border-gold-500/30 cursor-pointer active:scale-98">
-                    <i class="fa-solid fa-bolt text-gold-400"></i>
-                    <span>فوری آرڈر</span>
-                  </button>
-                  <button type="button" onclick="addToCart('${prod.id}')" class="w-full bg-gold-50 hover:bg-gold-100 text-slate-800 text-sm sm:text-base font-black py-2.5 rounded-xl border border-gold-300 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98">
-                    <i class="fa-solid fa-cart-plus text-brand-900"></i>
-                    <span>ٹوکری میں ڈالیں</span>
+                <div class="space-y-2 pt-1">
+                  <div class="grid grid-cols-2 gap-2">
+                    <button type="button" onclick="openDirectOrder('${prod.id}')" class="w-full bg-brand-900 hover:bg-brand-800 text-gold-100 text-sm sm:text-base font-black py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-1.5 border border-gold-500/30 cursor-pointer active:scale-98">
+                      <i class="fa-solid fa-bolt text-gold-400"></i>
+                      <span>ابھی خریدیں</span>
+                    </button>
+                    <button type="button" onclick="addToCart('${prod.id}')" class="w-full bg-gold-50 hover:bg-gold-100 text-slate-800 text-sm sm:text-base font-black py-2.5 rounded-xl border border-gold-300 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98">
+                      <i class="fa-solid fa-cart-plus text-brand-900"></i>
+                      <span>ٹوکری میں ڈالیں</span>
+                    </button>
+                  </div>
+                  <button type="button" onclick="viewProductPage('${prod.id}')" class="w-full bg-slate-900 hover:bg-slate-800 text-gold-200 text-xs sm:text-sm font-bold py-2 rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 border border-slate-700 cursor-pointer active:scale-98">
+                    <i class="fa-solid fa-circle-info text-gold-400"></i>
+                    <span>مکمل تفصیل و خصوصیات دیکھیں</span>
                   </button>
                 </div>
               </div>
@@ -3198,58 +3189,101 @@
     }
 
     /**
+     * Map any product object to a complete Hero Featured card configuration
+     */
+    function productToHeroConfig(prod) {
+      if (!prod) return null;
+      const norm = prod.nameUrdu ? prod : normalizeAdminProduct(prod);
+      return {
+        productId: (norm.id || "1").toString(),
+        title: norm.nameUrdu || norm.name || "خالص قدرتی ہربل پراڈکٹ",
+        titleEn: norm.nameEn || norm.variant || "",
+        price: Number(norm.price) || 1500,
+        regularPrice: Number(norm.regularPrice) || Math.round((Number(norm.price) || 1500) * 1.3),
+        image: norm.image || "akseer-e-shabab.png",
+        topBadge: "کیش آن ڈیلیوری دستیاب ہے",
+        pillBadge: norm.variant ? (norm.variant + " کیپسول") : "100% خالص ہربل فارمولا",
+        awardBadge: norm.badge || "سب سے زیادہ فروخت ہونے والا فارمولا",
+        tag1: "قدرتی دیسی جڑی بوٹیاں",
+        tag2: "حیرت انگیز اور دیرپا نتائج",
+        description: norm.description || (Array.isArray(norm.benefits) ? norm.benefits[0] : "") || "خالص قدرتی دیسی جڑی بوٹیوں سے تیار کردہ شاہانہ اور محفوظ نسخہ۔"
+      };
+    }
+
+    /**
      * Dynamically update Hero Featured Card from Admin Portal configuration
      */
     function applyHeroFeaturedProduct(hero) {
       if (!hero) return;
 
-      if (hero.title) {
-        const titleEl = document.getElementById('hero-featured-title');
-        if (titleEl) titleEl.innerText = hero.title;
-      }
-      if (hero.description) {
-        const descEl = document.getElementById('hero-featured-desc');
-        if (descEl) descEl.innerText = hero.description;
-      }
-      if (hero.image) {
-        const imgEl = document.getElementById('hero-featured-image');
-        if (imgEl) {
-          imgEl.src = hero.image;
-          imgEl.alt = hero.title || "Featured Product";
-        }
-      }
-      if (hero.price !== undefined && hero.price !== null && hero.price !== "") {
-        const priceEl = document.getElementById('hero-featured-price');
-        if (priceEl) priceEl.innerHTML = `<span class="text-base font-extrabold text-emerald-700">Rs.</span> <span>${Number(hero.price).toLocaleString()}</span>`;
-      }
-      if (hero.regularPrice !== undefined && hero.regularPrice !== null && hero.regularPrice !== "") {
-        const regEl = document.getElementById('hero-featured-regular-price');
-        if (regEl) regEl.innerText = `Rs. ${Number(hero.regularPrice).toLocaleString()}`;
-      }
-      if (hero.topBadge) {
-        const topEl = document.getElementById('hero-featured-top-badge');
-        if (topEl) topEl.innerText = hero.topBadge;
-      }
-      if (hero.pillBadge) {
-        const pillTextEl = document.getElementById('hero-featured-pill-text');
-        if (pillTextEl) pillTextEl.innerText = hero.pillBadge;
-      }
-      if (hero.awardBadge) {
-        const awardTextEl = document.getElementById('hero-featured-award-text');
-        if (awardTextEl) awardTextEl.innerText = hero.awardBadge;
-      }
-      if (hero.tag1) {
-        const tag1El = document.getElementById('hero-featured-tag1');
-        if (tag1El) tag1El.innerText = hero.tag1;
-      }
-      if (hero.tag2) {
-        const tag2El = document.getElementById('hero-featured-tag2');
-        if (tag2El) tag2El.innerText = hero.tag2;
+      const title = hero.title || hero.nameUrdu || hero.name || "";
+      const pId = (hero.productId || hero.id || "").toString();
+      const heroTitle = title.trim().toLowerCase();
+
+      // Guard against old RedBull ghost data
+      if (heroTitle.includes("ریڈبل") || heroTitle.includes("redbull")) {
+        try { localStorage.removeItem("pl_hero_featured"); } catch (e) {}
+        return;
       }
 
-      const pId = (hero.productId || "").toString();
-      const heroTitle = (hero.title || "").trim().toLowerCase();
-      const targetParam = pId || hero.title || "1";
+      const titleEl = document.getElementById('hero-featured-title');
+      if (titleEl && title) {
+        titleEl.innerText = title;
+      }
+
+      const desc = hero.description || hero.desc || "";
+      const descEl = document.getElementById('hero-featured-desc');
+      if (descEl && desc) {
+        descEl.innerText = desc;
+      }
+
+      // Resolve image: use hero.image if present; otherwise resolve from productsData
+      let resolvedImage = (hero.image && hero.image !== "akseer-e-shabab.png") ? hero.image : "";
+      if (!resolvedImage) {
+        const matchingProd = productsData.find(p => 
+          (pId && p.id.toString() === pId) || 
+          (heroTitle && p.nameUrdu.trim().toLowerCase() === heroTitle)
+        );
+        if (matchingProd && matchingProd.image) {
+          resolvedImage = matchingProd.image;
+        }
+      }
+      if (!resolvedImage) resolvedImage = hero.image || "akseer-e-shabab.png";
+
+      const imgEl = document.getElementById('hero-featured-image');
+      if (imgEl) {
+        imgEl.src = resolvedImage;
+        imgEl.alt = title || "Featured Product";
+      }
+
+      const priceVal = (hero.price !== undefined && hero.price !== null && hero.price !== "") ? hero.price : "";
+      const priceEl = document.getElementById('hero-featured-price');
+      if (priceEl && priceVal !== "") {
+        priceEl.innerHTML = `<span class="text-base font-extrabold text-emerald-700">Rs.</span> <span>${Number(priceVal).toLocaleString()}</span>`;
+      }
+
+      const regVal = (hero.regularPrice !== undefined && hero.regularPrice !== null && hero.regularPrice !== "") ? hero.regularPrice : "";
+      const regEl = document.getElementById('hero-featured-regular-price');
+      if (regEl && regVal !== "") {
+        regEl.innerText = `Rs. ${Number(regVal).toLocaleString()}`;
+      }
+
+      const topEl = document.getElementById('hero-featured-top-badge');
+      if (topEl && hero.topBadge) topEl.innerText = hero.topBadge;
+
+      const pillTextEl = document.getElementById('hero-featured-pill-text');
+      if (pillTextEl && hero.pillBadge) pillTextEl.innerText = hero.pillBadge;
+
+      const awardTextEl = document.getElementById('hero-featured-award-text');
+      if (awardTextEl && hero.awardBadge) awardTextEl.innerText = hero.awardBadge;
+
+      const tag1El = document.getElementById('hero-featured-tag1');
+      if (tag1El && hero.tag1) tag1El.innerText = hero.tag1;
+
+      const tag2El = document.getElementById('hero-featured-tag2');
+      if (tag2El && hero.tag2) tag2El.innerText = hero.tag2;
+
+      const targetParam = pId || title || "1";
 
       const buyBtn = document.getElementById('hero-featured-buy-btn');
       if (buyBtn) {
@@ -3275,7 +3309,7 @@
 
       const heroProductItem = {
         id: pId || ("hero_" + Date.now()),
-        nameUrdu: hero.title || "ہیرو فلیگ شپ فارمولا",
+        nameUrdu: title || "ہیرو فلیگ شپ فارمولا",
         nameEn: hero.titleEn || "Pure Life Featured Formula",
         category: hero.category || "vitality",
         badge: hero.tag1 || "سب سے مقبول",
@@ -3284,10 +3318,10 @@
         regularPrice: Number(hero.regularPrice) || Math.round((Number(hero.price) || 1850) * 1.3),
         rating: 4.9,
         reviewsCount: 1420,
-        image: hero.image || "akseer-e-shabab.png",
-        description: hero.description || "100% خالص قدرتی دیسی جڑی بوٹیوں سے تیار کردہ شاہانہ نسخہ۔",
+        image: resolvedImage,
+        description: desc || "100% خالص قدرتی دیسی جڑی بوٹیوں سے تیار کردہ شاہانہ نسخہ۔",
         benefits: hero.benefits ? (Array.isArray(hero.benefits) ? hero.benefits : hero.benefits.split(/[\n\r]+/).filter(Boolean)) : [
-          hero.description || "جسمانی و اعصابی کمزوری، تھکاوٹ اور سستی کا خاتمہ",
+          desc || "جسمانی و اعصابی کمزوری، تھکاوٹ اور سستی کا خاتمہ",
           "100% خالص قدرتی نباتاتی نچوڑ بغیر کسی سائیڈ ایفیکٹ",
           "قوت مدافعت اور اسٹیمینا کی فوری بحالی",
           "کیش آن ڈیلیوری کی سہولت کے ساتھ باحفاظت ترسیل"
@@ -3303,12 +3337,7 @@
           ...productsData[existingIdx], 
           ...heroProductItem,
           id: pId || productsData[existingIdx].id,
-          dosage: heroProductItem.dosage || productsData[existingIdx].dosage,
-          ingredients: heroProductItem.ingredients || productsData[existingIdx].ingredients,
-          precautions: heroProductItem.precautions || productsData[existingIdx].precautions,
-          galleryImages: (heroProductItem.galleryImages && heroProductItem.galleryImages.length > 0) 
-            ? heroProductItem.galleryImages 
-            : productsData[existingIdx].galleryImages
+          image: resolvedImage || productsData[existingIdx].image
         };
       } else {
         // Only insert into productsData if dummy products are ON and catalog is empty (initial state)
@@ -3566,18 +3595,33 @@
 
         syncCatalogList(adminProducts);
 
-        // Check if hero product was deleted from the catalog:
-        if (adminProducts.length > 0 && serverHero) {
-          const heroId = String(serverHero.productId || "");
-          const heroTitle = String(serverHero.title || "").trim().toLowerCase();
-          const isHeroAlive = adminProducts.some(p => {
-            const pId = String(p.id || p.Id || "");
-            const pName = String(p.name || p.Name || "").trim().toLowerCase();
-            return (heroId && pId === heroId) || (heroTitle && pName === heroTitle);
-          });
+        // Check if hero product was deleted from the catalog or is dead RedBull:
+        if (adminProducts.length > 0) {
+          const currentHero = serverHero || (function() {
+            try { return JSON.parse(localStorage.getItem("pl_hero_featured") || "null"); } catch(e) { return null; }
+          })();
+
+          let isHeroAlive = false;
+          if (currentHero) {
+            const heroId = String(currentHero.productId || "");
+            const heroTitle = String(currentHero.title || "").trim().toLowerCase();
+            const isRedBull = heroTitle.includes("ریڈبل") || heroTitle.includes("redbull");
+            if (!isRedBull) {
+              isHeroAlive = adminProducts.some(p => {
+                const pId = String(p.id || p.Id || "");
+                const pName = String(p.name || p.Name || "").trim().toLowerCase();
+                return (heroId && pId === heroId) || (heroTitle && pName === heroTitle);
+              });
+            }
+          }
+
           if (!isHeroAlive) {
-            // Hero was deleted from admin! Auto-realign hero with the first active product
-            applyHeroFeaturedProduct(normalizeAdminProduct(adminProducts[0]));
+            // Hero was deleted from admin or was ghost RedBull! Auto-realign hero with the first active product
+            const activeHero = productToHeroConfig(adminProducts[0]);
+            applyHeroFeaturedProduct(activeHero);
+            try {
+              localStorage.setItem("pl_hero_featured", JSON.stringify(activeHero));
+            } catch (e) {}
           }
         }
       } catch (err) {
