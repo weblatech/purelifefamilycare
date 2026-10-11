@@ -534,8 +534,8 @@
                 </div>
 
                 <h3 id="hero-featured-title" onclick="viewProductPage('1')" class="text-2xl font-black text-slate-900 cursor-pointer hover:text-brand-900 transition">اکسیرِ شباب گولڈ کیپسول (Akseer-e-Shabab)</h3>
-                <p id="hero-featured-desc" class="text-sm text-slate-600 leading-relaxed">
-                  مردانہ و اعصابی کمزوری، پٹھوں کا درد، دائمی تھکن اور جسمانی قوت و اسٹیمینا کی فوری بحالی کے لیے لاجواب شاہانہ ہربل نسخہ۔
+                <p id="hero-featured-desc" class="text-sm sm:text-base text-slate-600 leading-relaxed overflow-hidden font-medium" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.75rem;">
+                  مردانہ و اعصابی کمزوری، پٹھوں کا درد اور جسمانی قوت کی بحالی کا شاہانہ نسخہ۔
                 </p>
 
                 <div class="flex items-center justify-between pt-3 border-t border-slate-150">
@@ -3234,7 +3234,14 @@
       const desc = hero.description || hero.desc || "";
       const descEl = document.getElementById('hero-featured-desc');
       if (descEl && desc) {
-        descEl.innerText = desc;
+        // Professional concise teaser for Hero Card (full detailed description is on Product Detail Page)
+        let cleanDesc = desc.replace(/[\r\n]+/g, " ").replace(/\s+/g, " ").trim();
+        if (cleanDesc.length > 125) {
+          const cut = cleanDesc.slice(0, 120);
+          const lastSpace = cut.lastIndexOf(" ");
+          cleanDesc = (lastSpace > 40 ? cut.slice(0, lastSpace) : cut).trim() + "...";
+        }
+        descEl.innerText = cleanDesc;
       }
 
       // Resolve image: use hero.image if present; otherwise resolve from productsData
