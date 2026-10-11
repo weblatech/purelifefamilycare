@@ -1222,29 +1222,33 @@
       <!-- DETAILED TABS / SPECIFICATION CARDS -->
       <div class="mt-16 sm:mt-24">
         <!-- Tabs Header -->
-        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-5 border-b-2 border-gold-200/90 pb-6 mb-8">
-          <button type="button" onclick="switchPdpTab('benefits')" id="pdp-tab-btn-benefits" class="pdp-tab-btn active px-6 sm:px-9 py-4 sm:py-5 rounded-2xl text-lg sm:text-xl font-black transition-all duration-200 flex items-center justify-center gap-3 bg-brand-900 text-gold-200 shadow-lg border-2 border-gold-400 ring-2 ring-gold-400/40 cursor-pointer transform scale-102">
-            <i class="fa-solid fa-heart-pulse text-gold-400 text-xl sm:text-2xl"></i>
+        <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 border-b-2 border-gold-200/90 pb-6 mb-8">
+          <button type="button" onclick="switchPdpTab('benefits')" id="pdp-tab-btn-benefits" class="pdp-tab-btn active px-5 sm:px-7 py-3.5 sm:py-4 rounded-2xl text-base sm:text-lg font-black transition-all duration-200 flex items-center justify-center gap-2.5 bg-brand-900 text-gold-200 shadow-lg border-2 border-gold-400 ring-2 ring-gold-400/40 cursor-pointer transform scale-102">
+            <i class="fa-solid fa-heart-pulse text-gold-400 text-lg sm:text-xl"></i>
             <span>طبی فوائد و افادیت</span>
           </button>
-          <button type="button" onclick="switchPdpTab('dosage')" id="pdp-tab-btn-dosage" class="pdp-tab-btn px-6 sm:px-9 py-4 sm:py-5 rounded-2xl text-lg sm:text-xl font-black transition-all duration-200 flex items-center justify-center gap-3 bg-white text-slate-800 hover:bg-gold-50/70 border-2 border-slate-200/90 hover:border-gold-300 shadow-2xs cursor-pointer">
-            <i class="fa-solid fa-prescription-bottle text-gold-600 text-xl sm:text-2xl"></i>
+          <button type="button" onclick="switchPdpTab('dosage')" id="pdp-tab-btn-dosage" class="pdp-tab-btn px-5 sm:px-7 py-3.5 sm:py-4 rounded-2xl text-base sm:text-lg font-black transition-all duration-200 flex items-center justify-center gap-2.5 bg-white text-slate-800 hover:bg-gold-50/70 border-2 border-slate-200/90 hover:border-gold-300 shadow-2xs cursor-pointer">
+            <i class="fa-solid fa-prescription-bottle text-gold-600 text-lg sm:text-xl"></i>
             <span>طریقۂ استعمال و خوراک</span>
           </button>
-          <button type="button" onclick="switchPdpTab('ingredients')" id="pdp-tab-btn-ingredients" class="pdp-tab-btn px-6 sm:px-9 py-4 sm:py-5 rounded-2xl text-lg sm:text-xl font-black transition-all duration-200 flex items-center justify-center gap-3 bg-white text-slate-800 hover:bg-gold-50/70 border-2 border-slate-200/90 hover:border-gold-300 shadow-2xs cursor-pointer">
-            <i class="fa-solid fa-mortar-pestle text-gold-600 text-xl sm:text-2xl"></i>
+          <button type="button" onclick="switchPdpTab('precautions')" id="pdp-tab-btn-precautions" class="pdp-tab-btn px-5 sm:px-7 py-3.5 sm:py-4 rounded-2xl text-base sm:text-lg font-black transition-all duration-200 flex items-center justify-center gap-2.5 bg-white text-slate-800 hover:bg-gold-50/70 border-2 border-slate-200/90 hover:border-gold-300 shadow-2xs cursor-pointer">
+            <i class="fa-solid fa-ban text-red-500 text-lg sm:text-xl"></i>
+            <span>پرہیز و احتیاط</span>
+          </button>
+          <button type="button" onclick="switchPdpTab('ingredients')" id="pdp-tab-btn-ingredients" class="pdp-tab-btn px-5 sm:px-7 py-3.5 sm:py-4 rounded-2xl text-base sm:text-lg font-black transition-all duration-200 flex items-center justify-center gap-2.5 bg-white text-slate-800 hover:bg-gold-50/70 border-2 border-slate-200/90 hover:border-gold-300 shadow-2xs cursor-pointer">
+            <i class="fa-solid fa-mortar-pestle text-gold-600 text-lg sm:text-xl"></i>
             <span>خالص اجزاء و فارمولا</span>
           </button>
-          <button type="button" onclick="switchPdpTab('guarantee')" id="pdp-tab-btn-guarantee" class="pdp-tab-btn px-6 sm:px-9 py-4 sm:py-5 rounded-2xl text-lg sm:text-xl font-black transition-all duration-200 flex items-center justify-center gap-3 bg-white text-slate-800 hover:bg-gold-50/70 border-2 border-slate-200/90 hover:border-gold-300 shadow-2xs cursor-pointer">
-            <i class="fa-solid fa-award text-gold-600 text-xl sm:text-2xl"></i>
+          <button type="button" onclick="switchPdpTab('guarantee')" id="pdp-tab-btn-guarantee" class="pdp-tab-btn px-5 sm:px-7 py-3.5 sm:py-4 rounded-2xl text-base sm:text-lg font-black transition-all duration-200 flex items-center justify-center gap-2.5 bg-white text-slate-800 hover:bg-gold-50/70 border-2 border-slate-200/90 hover:border-gold-300 shadow-2xs cursor-pointer">
+            <i class="fa-solid fa-award text-gold-600 text-lg sm:text-xl"></i>
             <span>ضمانت و ترسیل</span>
           </button>
         </div>
 
         <!-- Tab Content Panes -->
         <div class="bg-white rounded-3xl p-6 sm:p-12 border-2 border-gold-300 shadow-xl text-right">
-          <!-- Benefits Pane -->
-          <div id="pdp-pane-benefits" class="pdp-pane space-y-7">
+          <!-- Benefits Pane (Points Only - Description removed as requested) -->
+          <div id="pdp-pane-benefits" class="pdp-pane space-y-6">
             <div class="border-r-4 border-brand-900 pr-4 pb-1">
               <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 leading-tight">
                 خصوصی طبی فوائد اور باکمال اثرات
@@ -1252,17 +1256,13 @@
               <p class="text-xs sm:text-sm font-bold text-gold-800 mt-1">طبی و سائنسی تجربات کی روشنی میں خالص جڑی بوٹیوں کے باکمال نتائج</p>
             </div>
 
-            <p id="pdp-desc-long" class="text-slate-800 text-xl sm:text-2xl font-bold leading-[2.4] tracking-wide">
-              ...
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4.5 pt-3" id="pdp-detailed-benefits-list">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4.5 pt-2" id="pdp-detailed-benefits-list">
               <!-- Dynamically populated large benefits cards -->
             </div>
           </div>
 
-          <!-- Dosage Pane -->
-          <div id="pdp-pane-dosage" class="pdp-pane hidden space-y-7">
+          <!-- Dosage Pane (Clean Dosage Box Only) -->
+          <div id="pdp-pane-dosage" class="pdp-pane hidden space-y-6">
             <div class="border-r-4 border-brand-900 pr-4 pb-1">
               <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 leading-tight">
                 صحیح طریقۂ استعمال، مقدارِ خوراک و ضروری ہدایات
@@ -1283,28 +1283,62 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-3">
-              <div class="p-7 rounded-3xl bg-slate-50 border-2 border-slate-200/90 shadow-2xs space-y-3 hover:border-gold-300 transition">
-                <div class="w-12 h-12 rounded-2xl bg-gold-100 text-gold-800 flex items-center justify-center text-2xl font-black border border-gold-300">
-                  <i class="fa-solid fa-clock"></i>
-                </div>
-                <h5 class="font-black text-slate-950 text-2xl">صحیح وقت</h5>
-                <p class="text-lg font-bold text-slate-700 leading-loose">صبح ناشتے کے بعد یا رات کھانے کے بعد نیم گرم دودھ کے ساتھ استعمال کریں۔</p>
-              </div>
-              <div class="p-7 rounded-3xl bg-slate-50 border-2 border-slate-200/90 shadow-2xs space-y-3 hover:border-brand-800 transition">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-2xl font-black border border-emerald-300">
-                  <i class="fa-solid fa-calendar-days"></i>
-                </div>
-                <h5 class="font-black text-slate-950 text-2xl">کورس کی مدت</h5>
-                <p class="text-lg font-bold text-slate-700 leading-loose">دیرپا اور مستقل نتائج کے لیے کم از کم 30 سے 45 دن باقاعدگی سے استعمال کریں۔</p>
-              </div>
-              <div class="p-7 rounded-3xl bg-slate-50 border-2 border-slate-200/90 shadow-2xs space-y-3 hover:border-red-300 transition">
-                <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-800 flex items-center justify-center text-2xl font-black border border-red-300">
+          <!-- Dedicated Precautions Pane -->
+          <div id="pdp-pane-precautions" class="pdp-pane hidden space-y-6">
+            <div class="border-r-4 border-red-700 pr-4 pb-1">
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 leading-tight">
+                پرہیز، غذائی احتیاط اور ضروری طبی ہدایات
+              </h3>
+              <p class="text-xs sm:text-sm font-bold text-red-800 mt-1">دوا کے 100% بھرپور اور تیز ترین نتائج کے لیے ضروری احتیاطی تدابیر</p>
+            </div>
+
+            <!-- Primary Precautions Box (Dynamic from Product Data) -->
+            <div class="p-7 sm:p-9 rounded-3xl bg-gradient-to-br from-red-50/80 via-white to-amber-50/50 border-2 border-red-300 shadow-sm space-y-4">
+              <div class="flex items-start gap-4 sm:gap-5">
+                <div class="w-14 h-14 rounded-2xl bg-red-600 text-white flex items-center justify-center text-3xl flex-shrink-0 mt-1 shadow-sm">
                   <i class="fa-solid fa-ban"></i>
                 </div>
-                <h5 class="font-black text-slate-950 text-2xl">پرہیز و احتیاط</h5>
-                <p id="pdp-precautions-text" class="text-lg font-bold text-slate-700 leading-loose">کھٹی، بادی، تیز مرچ مصالحے دار اور تلی ہوئی اشیاء سے مکمل پرہیز فرمائیں۔</p>
+                <div class="space-y-2">
+                  <h4 class="text-2xl sm:text-3xl font-black text-red-950">پرہیز و خصوصی احتیاط (Precautions):</h4>
+                  <p id="pdp-precautions-text" class="text-slate-900 text-xl sm:text-2xl leading-[2.4] font-black pt-1">
+                    کھٹی، بادی، تیز مرچ مصالحے دار اور تلی ہوئی اشیاء سے مکمل پرہیز فرمائیں۔
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supporting Dietary Guidelines Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+              <div class="p-6 sm:p-7 rounded-3xl bg-slate-50 border-2 border-slate-200/90 shadow-2xs space-y-3 hover:border-red-300 transition">
+                <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-800 flex items-center justify-center text-2xl font-black border border-red-200">
+                  <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                <h5 class="font-black text-slate-950 text-2xl">غذائی پرہیز</h5>
+                <p class="text-base sm:text-lg font-bold text-slate-700 leading-loose">
+                  تلی ہوئی اشیاء، تیز مرچ مصالحے، کھٹی چیزیں (اچار، املی، سرکہ)، کولڈ ڈرنکس اور فاسٹ فوڈ سے مکمل پرہیز کریں۔
+                </p>
+              </div>
+
+              <div class="p-6 sm:p-7 rounded-3xl bg-slate-50 border-2 border-slate-200/90 shadow-2xs space-y-3 hover:border-emerald-300 transition">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-2xl font-black border border-emerald-200">
+                  <i class="fa-solid fa-apple-whole"></i>
+                </div>
+                <h5 class="font-black text-slate-950 text-2xl">معاون و مفید غذائیں</h5>
+                <p class="text-base sm:text-lg font-bold text-slate-700 leading-loose">
+                  دیسی گھی، تازہ دودھ، مغزیات (بادام، اخروٹ) اور تازہ پھلوں کا باقاعدہ استعمال دوا کی تاثیر کو دوگنا کرتا ہے۔
+                </p>
+              </div>
+
+              <div class="p-6 sm:p-7 rounded-3xl bg-slate-50 border-2 border-slate-200/90 shadow-2xs space-y-3 hover:border-gold-300 transition">
+                <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl font-black border border-amber-200">
+                  <i class="fa-solid fa-user-doctor"></i>
+                </div>
+                <h5 class="font-black text-slate-950 text-2xl">طبی احتیاط</h5>
+                <p class="text-base sm:text-lg font-bold text-slate-700 leading-loose">
+                  شدید ہائی بلڈ پریشر یا دل کے وہ مریض جنہیں معالج نے سختی یا مشقت سے منع کیا ہو، وہ اپنے ڈاکٹر کے مشورے کے بعد استعمال کریں۔
+                </p>
               </div>
             </div>
           </div>
